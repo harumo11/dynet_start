@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="None">
+  
+  <link rel="shortcut icon" href="img/favicon.ico">
+  <title>dynet start documentation in Japanese - dynet start documentation in Japanese</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "dynet start documentation in Japanese";
+    var mkdocs_page_input_path = "index.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="js/jquery-2.1.1.min.js" defer></script>
+  <script src="js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="." class="icon icon-home"> dynet start documentation in Japanese</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href=".">dynet start documentation in Japanese</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#dynet-start-documentation-in-japanese">dynet start documentation in Japanese</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#installation-for-ubuntu-1804">Installation for Ubuntu 18.04</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href=".">dynet start documentation in Japanese</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>dynet start documentation in Japanese</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="dynet-start-documentation-in-japanese">dynet start documentation in Japanese</h1>
+<h2 id="installation-for-ubuntu-1804">Installation for <strong>Ubuntu 18.04</strong></h2>
+<h3 id="1-cuda">1. cuda</h3>
+<p>(お使いのPCがnvidiaのグラボを積んでない場合は，この章は飛ばしましょう)</p>
+<h4 id="nvidia-driver">Nvidia driver</h4>
+<p>Original web pages are <a href="https://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#installdriver">here</a></p>
+<p>Download file and details are
+<a href="https://developer.nvidia.com/cuda-downloads?target_os=Linux&amp;target_arch=x86_64&amp;target_distro=Ubuntu&amp;target_version=1804&amp;target_type=debnetwork">netwok driver</a></p>
+<pre><code>sudo dpkg -i cuda-repo-ubuntu1804_10.1.105-1_amd64.deb 
+sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
+sudo apt update
+sudo apt install cuda
+</code></pre>
+
+<p>After driver installation, try reboot.</p>
+<pre><code>sudo reboot
+</code></pre>
+
+<p>再起動の後，問題なくインストールできたかどうか確かめましょう．</p>
+<pre><code>nvidia-smi
+</code></pre>
+
+<p>下記のような表示が出れば成功です．</p>
+<pre><code>Tue May  7 15:46:06 2019       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 418.56       Driver Version: 418.56       CUDA Version: 10.1     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|===============================+======================+======================|
+|   0  GeForce GTX 108...  Off  | 00000000:01:00.0  On |                  N/A |
+| 23%   29C    P8    12W / 250W |    256MiB / 11175MiB |      1%      Default |
++-------------------------------+----------------------+----------------------+
+
++-----------------------------------------------------------------------------+
+| Processes:                                                       GPU Memory |
+|  GPU       PID   Type   Process name                             Usage      |
+|=============================================================================|
+|    0      1269      G   /usr/lib/xorg/Xorg                           162MiB |
+|    0      1446      G   /usr/bin/gnome-shell                          90MiB |
++-----------------------------------------------------------------------------+
+</code></pre>
+
+<h4 id="cudnn">cuDNN</h4>
+<p><a href="https://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#installdriver">詳細</a></p>
+<p>nvidiaアカウントが必要なので作成してダウンロードしましょう.</p>
+<p><a href="https://developer.nvidia.com/cudnn">ダウンロードページ</a>
+に飛んでcuDNNをダウンロードしましょう．
+いくつかダウンロードできるものがありますが，</p>
+<ol>
+<li>cuDNN Runtime Library for Ubuntu18.04</li>
+<li>cuDNN Developer Library for Ubuntu18.04</li>
+<li>cuDNN Code samples and User Guide for Ubuntu18.04</li>
+</ol>
+<p>をダウンロードしましょう．
+下記のコマンドでインストールしましょう．</p>
+<pre><code>sudo dpkg -i libcudnn7_7.5.1.10-1+cuda10.1_amd64.deb
+sudo dpkg -i libcudnn7-dev_7.5.1.10-1+cuda10.1_amd64.deb
+sudo dpkg -i libcudnn7-doc_7.5.1.10-1+cuda10.1_amd64.deb
+</code></pre>
+
+<p>正常にインストールが完了したかどうかを確認するために
+試しにディープラーニングを実行してみましょう．</p>
+<pre><code>cp -r /usr/src/cudnn_samples_v7/ $HOME
+cd  $HOME/cudnn_samples_v7/mnistCUDNN
+make clean &amp;&amp; make
+make clean &amp;&amp; make
+</code></pre>
+
+<p>うまく実行できると結果が表示されます．
+私の環境(Geforce GTX1080Ti)では下記のように表示されました．
+最後に<code>Test passed!</code>と表示されていればうまくインストールが完了した証拠です．</p>
+<pre><code>cudnnGetVersion() : 7501 , CUDNN_VERSION from cudnn.h : 7501 (7.5.1)
+Host compiler version : GCC 7.4.0
+There are 1 CUDA capable devices on your machine :
+device 0 : sms 28  Capabilities 6.1, SmClock 1582.0 Mhz, MemSize (Mb) 11175, MemClock 5505.0 Mhz, Ecc=0, boardGroupID=0
+Using device 0
+
+Testing single precision
+Loading image data/one_28x28.pgm
+Performing forward propagation ...
+Testing cudnnGetConvolutionForwardAlgorithm ...
+Fastest algorithm is Algo 1
+Testing cudnnFindConvolutionForwardAlgorithm ...
+^^^^ CUDNN_STATUS_SUCCESS for Algo 0: 0.066368 time requiring 0 memory
+^^^^ CUDNN_STATUS_SUCCESS for Algo 1: 0.077664 time requiring 3464 memory
+^^^^ CUDNN_STATUS_SUCCESS for Algo 2: 0.102400 time requiring 57600 memory
+^^^^ CUDNN_STATUS_SUCCESS for Algo 7: 0.110400 time requiring 2057744 memory
+^^^^ CUDNN_STATUS_SUCCESS for Algo 5: 0.132096 time requiring 203008 memory
+Resulting weights from Softmax:
+0.0000000 0.9999399 0.0000000 0.0000000 0.0000561 0.0000000 0.0000012 0.0000017 0.0000010 0.0000000 
+Loading image data/three_28x28.pgm
+Performing forward propagation ...
+Resulting weights from Softmax:
+0.0000000 0.0000000 0.0000000 0.9999288 0.0000000 0.0000711 0.0000000 0.0000000 0.0000000 0.0000000 
+Loading image data/five_28x28.pgm
+Performing forward propagation ...
+Resulting weights from Softmax:
+0.0000000 0.0000008 0.0000000 0.0000002 0.0000000 0.9999820 0.0000154 0.0000000 0.0000012 0.0000006 
+
+Result of classification: 1 3 5
+
+Test passed!
+
+Testing half precision (math in single precision)
+Loading image data/one_28x28.pgm
+Performing forward propagation ...
+Testing cudnnGetConvolutionForwardAlgorithm ...
+Fastest algorithm is Algo 1
+Testing cudnnFindConvolutionForwardAlgorithm ...
+^^^^ CUDNN_STATUS_SUCCESS for Algo 1: 0.019584 time requiring 3464 memory
+^^^^ CUDNN_STATUS_SUCCESS for Algo 2: 0.032768 time requiring 28800 memory
+^^^^ CUDNN_STATUS_SUCCESS for Algo 7: 0.091136 time requiring 2057744 memory
+^^^^ CUDNN_STATUS_SUCCESS for Algo 5: 0.092064 time requiring 203008 memory
+^^^^ CUDNN_STATUS_SUCCESS for Algo 4: 0.094176 time requiring 207360 memory
+Resulting weights from Softmax:
+0.0000001 1.0000000 0.0000001 0.0000000 0.0000563 0.0000001 0.0000012 0.0000017 0.0000010 0.0000001 
+Loading image data/three_28x28.pgm
+Performing forward propagation ...
+Resulting weights from Softmax:
+0.0000000 0.0000000 0.0000000 1.0000000 0.0000000 0.0000714 0.0000000 0.0000000 0.0000000 0.0000000 
+Loading image data/five_28x28.pgm
+Performing forward propagation ...
+Resulting weights from Softmax:
+0.0000000 0.0000008 0.0000000 0.0000002 0.0000000 1.0000000 0.0000154 0.0000000 0.0000012 0.0000006 
+
+Result of classification: 1 3 5
+
+Test passed!
+</code></pre>
+
+<p>最後にインストール検証テストで使用したディレクトリはもう必要ないので削除しておきましょう．</p>
+<pre><code>cd ~/
+rm -rf cudnn_samples_v7
+</code></pre>
+
+<h3 id="2eigen">2.Eigen</h3>
+<p>(お使いのPCがnvidiaのグラボを積んでない場合は，この章を実行しましょう)</p>
+<p><a href="http://eigen.tuxfamily.org/index.php?title=Main_Page">Eigen</a>から
+最新バージョンのEigenをダウンロードしましょう．</p>
+<p>ダウンロードしたEigenのディレクトリに移動して下記のコマンドを打ちましょう．</p>
+<pre><code>mkdir build_dir
+cd build_dir
+sudo make install
+</code></pre>
+
+<h3 id="3-dynet">3. dynet</h3>
+<p>この章を実行する前にcudaバックエンドかeigenバックエンドを選択し，
+あなたのPCのにダウンロードしておいてください．</p>
+<pre><code>git clone https://github.com/clab/dynet.git
+cd dynet
+mkdir build
+cd build
+</code></pre>
+
+<p>バックエンドがcudaの場合はこちら</p>
+<pre><code>cmake .. -DENABLE_BOOST=ON -DENABLE_CPP_EXAMPLES=ON -DEIGEN3_INCLUDE_DIR=/usr/local/include/eigen3 -DCUDNN_ROOT=/usr/local/cuda/ -DBACKEND=cuda
+</code></pre>
+
+<p>バックエンドがeigenの場合はこちら</p>
+<pre><code>cmake .. -DENABLE_BOOST=ON -DENABLE_CPP_EXAMPLES=ON -DEIGEN3_INCLUDE_DIR=/usr/local/include/eigen3
+</code></pre>
+
+<pre><code>make -j10
+sudo make install
+</code></pre>
+
+<p>最後に，インストールの確認のために簡単なディープラーニングのプログラムを実行してみましょう．</p>
+<pre><code>cd example
+./xor-autobatch
+</code></pre>
+
+<p>エラーなく実行された完了です．</p>
+<p>はい，これでインストールは完了です．
+おつかれさまでした．</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+      
+    </span>
+</div>
+    <script>var base_url = '.';</script>
+    <script src="js/theme.js" defer></script>
+      <script src="search/main.js" defer></script>
+
+</body>
+</html>
+
+<!--
+MkDocs version : 1.0.4
+Build Date UTC : 2019-05-07 08:52:45
+-->
