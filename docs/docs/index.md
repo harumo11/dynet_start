@@ -168,6 +168,7 @@ rm -rf cudnn_samples_v7
 ```
 mkdir build_dir
 cd build_dir
+cmake ../
 sudo make install
 ```
 
