@@ -3,3 +3,5 @@ site_name: dynet start documentation in Japanese
 
 theme:  readthedocs
 
+markdown_extensions:
+    - admonition

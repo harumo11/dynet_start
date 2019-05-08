@@ -1,15 +1,39 @@
 # dynet start documentation in Japanese
 
+## dynet
+
+dynetの紹介です．
+qiitaの記事からdynetの紹介文を引用します．
+
+> 本記事ではニューラルネットワークのフレームワークの一つであるDyNetを簡単に紹介します。
+
+> このフレームワークは米カーネギーメロン大学の言語技術研究所が中心となって開発しているライブラリで、少し縁があって自分も裏で開発に参加しています。自然言語処理の国際会議であるEMNLPのチュートリアルでも使用されて、こちらでも割と人気があったようです。
+> DyNetの特徴としては:
+> 
+> - C++とPythonで使用可能
+> - インクリメンタルなネットワーク計算が可能
+> - ミニバッチの隠蔽
+> 
+> が挙げられます。
+> 2つ目の特徴を持つライブラリとしてはPFNのChainerなども挙げられ、主にrecurrent/recursive neural network系の実装が必要となる自然言語処理等の分野で力を発揮します。
+> 3つ目の特徴はかなり強力で、ユーザが投げたデータに応じてミニバッチ処理かそうでないか、ミニバッチ処理ならバッチの大きさ等を自動的に判別するので、ネットワークを記述するコード上ではそれを区別する必要がありません。論文に書いてある式をそのまま書けば、基本的には自動的にミニバッチ処理に対応したコードになるわけです。
+> メインの対応言語がC++なので、低レベルな領域で他のライブラリと連携したい場合には良い選択肢になるでしょう。DyNet自体はインターフェイスが高度に抽象化されているため、ネットワーク構築部分の見通しは他のフレームワークと比較しても遜色ないと思います。
+
 ## Installation for **Ubuntu 18.04**
 
 ### 1. cuda 
 (お使いのPCがnvidiaのグラボを積んでない場合は，この章は飛ばしましょう)
 #### Nvidia driver
 
-Original web pages are [here](https://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#installdriver)
+ドライバーの導入に際して
+[このページ](https://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#installdriver)
+を参考にしました．
 
-Download file and details are
-[netwok driver](https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&target_distro=Ubuntu&target_version=1804&target_type=debnetwork)
+また，ドライバーなどのダウンロードは
+[ここ](https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&target_distro=Ubuntu&target_version=1804&target_type=debnetwork)
+にあります．
+
+まず，ドライバーをダウンロードして，下記のコマンドでインストールしてください．
 
 ```
 sudo dpkg -i cuda-repo-ubuntu1804_10.1.105-1_amd64.deb 
@@ -18,7 +42,7 @@ sudo apt update
 sudo apt install cuda
 ```
 
-After driver installation, try reboot.
+ドライバーのインストールが終了したら，下記のコマンドでパソコンを再起動してください．
 
 ```
 sudo reboot
