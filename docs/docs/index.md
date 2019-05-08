@@ -174,8 +174,8 @@ sudo make install
 
 ### 3. dynet
 
-この章を実行する前にcudaバックエンドかeigenバックエンドを選択し，
-あなたのPCのにダウンロードしておいてください．
+**cudaとeigenの両方をインストールしておくことが必須条件です．**
+**cudaバックエンドを使用する場合でもeigenをインストールしておく必要があります．**
 
 ```
 git clone https://github.com/clab/dynet.git
