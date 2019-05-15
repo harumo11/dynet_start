@@ -33,7 +33,7 @@ Expression W = parameter(cg, pc.add_parameters({1, 3}));
 **我々はまだ具体的な値を設定する必要は無いことに注意してください．**
 
 ```C++
-vector<dynet::read> x_values(3);
+vector<dynet::real> x_values(3);
 Expression x = input(cg, {3}, &x_values);
 dynet::real y_value;
 Expression y = input(cg, &y_value);
