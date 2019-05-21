@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>ベーシックチュートリアル - dynet start documentation in Japanese</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u30d9\u30fc\u30b7\u30c3\u30af\u30c1\u30e5\u30fc\u30c8\u30ea\u30a2\u30eb";
+    var mkdocs_page_input_path = "basic.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> dynet start documentation in Japanese</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">dynet start documentation in Japanese</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">ベーシックチュートリアル</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#_1">ベーシックチュートリアル</a></li>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../common/">一般的な使い方</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../qiita/">Qiita</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../reference/">APIリファレンス</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../saving_and_loading/">保存と読み込み</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../trouble_shorting/">トラブルシューティング</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../unorthodox_design/">Unorthodox Design</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../xor/">XOR</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">dynet start documentation in Japanese</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>ベーシックチュートリアル</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="_1">ベーシックチュートリアル</h1>
+<p><a href="https://dynet.readthedocs.io/en/latest/cpp_basic_tutorial.html">ここの翻訳</a></p>
+<p>どのようにパラメータコレクションがトレーニングされるかの説明は以下のとおりです.
+(今回は簡単なロジスティック回帰モデルを用います)</p>
+<p>まずはじめに，我々はパラメータコレクションの構造体をセットアップします．</p>
+<p>パラメータコレクションとそれをアップデートするための<code>SGD</code>トレイナーを作成してください.</p>
+<pre><code class="C++">ParameterCollection pc;
+SimpleSGDTrainer trainer(pc);
+</code></pre>
+
+<p><code>computation graph</code>を作成しましょう．
+<code>computation graph</code>は情報の流れを定義します．</p>
+<pre><code class="C++">ComputationGraph cg;
+</code></pre>
+
+<p>1x3のパラメータベクターを初期化してください．
+そして，<code>computation graph</code>の一部にパラメータを加えてください．</p>
+<pre><code class="C++">Expression W = parameter(cg, pc.add_parameters({1, 3}));
+</code></pre>
+
+<p>回帰の入力と出力を定義する変数を作成してください．
+そして，<code>computation graph</code>の中にそれらを読み込ませてください．
+<strong>我々はまだ具体的な値を設定する必要は無いことに注意してください．</strong></p>
+<pre><code class="C++">vector&lt;dynet::real&gt; x_values(3);
+Expression x = input(cg, {3}, &amp;x_values);
+dynet::real y_value;
+Expression y = input(cg, &amp;y_value);
+</code></pre>
+
+<p>次に，入力に重みベクトルを掛けるための構造体を設定します．
+その後，ロジスティックシグモイド関数(ロジスティック回帰)を通じて，この出力を実行します．</p>
+<pre><code class="C++">Expression y_pred = logistic(W*x);
+</code></pre>
+
+<p>最後に，誤差を計算するための関数を作成しましょう．
+このモデルでは<code>computation graph</code>における最後の関数の値が最小になるように最適化されます．</p>
+<pre><code class="C++">Expression l = binary_log_loss(y_pred, y);
+</code></pre>
+
+<p>これで，我々はgraphの設定が完了しました．
+我々はその構造をプリントすることが出来ます．</p>
+<pre><code class="C++">cg.print_graphviz();
+</code></pre>
+
+<p>さあ，一つの例に対してパラメータのアップデートを実行しましょう．
+input/outpuにトレーニングデータの値を設定してください．</p>
+<pre><code class="C++">x_values = {0.5, 0.3, 0.7};
+y_values = 1.0;
+</code></pre>
+
+<p><strong>forward propagate</strong>は<code>computation graph</code>を通して値を前に伝播させていくことで，
+誤差関数の値<code>loss</code>を返します．</p>
+<pre><code class="C++">dynet::real loss = as_scalar(cg.forward(l));
+</code></pre>
+
+<p><strong>backward propagate</strong>はバックプロパゲーションを実行します．
+そして，<code>ParameterCollection</code>構造体の中にあるパラメータの勾配を計算します．</p>
+<pre><code class="C++">cg.backward(l);
+</code></pre>
+
+<p><code>trainer.update</code>は<code>ParameterCollection</code>のパラメータをアップデートします．
+この<code>ParameterCollection</code>は<code>trainer</code>のコンストラクタに渡したものです．
+ここでの1.0はスケーリングファクターといい，アップデートのサイズを我々がコントロールするためのものです．</p>
+<pre><code class="C++">trainer.update();
+</code></pre>
+
+<p>これはとても簡単なチュートリアルで<code>memory initialization</code>, <code>reading/writing parameter collection</code>, <code>recurrent/LSTM network</code>,
+もしくは，関数にバイアスを加えることに触れていないことに気をつけてください．
+どのようにDynetを使用すればいいかを知るベストな方法は<code>example</code>ディレクトリを見ることです．
+特に最も簡単な<code>xor</code>から始めるのがいいでしょう．</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../common/" class="btn btn-neutral float-right" title="一般的な使い方">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href=".." class="btn btn-neutral" title="dynet start documentation in Japanese"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../common/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

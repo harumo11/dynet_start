@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>保存と読み込み - dynet start documentation in Japanese</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u4fdd\u5b58\u3068\u8aad\u307f\u8fbc\u307f";
+    var mkdocs_page_input_path = "saving_and_loading.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> dynet start documentation in Japanese</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">dynet start documentation in Japanese</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../basic/">ベーシックチュートリアル</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../common/">一般的な使い方</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../qiita/">Qiita</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../reference/">APIリファレンス</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">保存と読み込み</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#_1">保存と読み込み</a></li>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../trouble_shorting/">トラブルシューティング</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../unorthodox_design/">Unorthodox Design</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../xor/">XOR</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">dynet start documentation in Japanese</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>保存と読み込み</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="_1">保存と読み込み</h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>populate</code>は居住する，生息する，人を居住させる，植民するという意味の動詞です．</p>
+</div>
+<p>dynetのC++インターフェースはユーザにモデルパラメータの保存とその読み込みをサポートしています．
+ユーザはモデルを保存する際に２つの方法を選択できます．
+基本的な使用においてはほとんどの場合，完全な<code>ParameterCollection</code>オブジェクトを保存することが
+できます．読み込み時において，ユーザはモデルが保存されたときに存在していたのと
+同じパラメータ変数を定義し，割り当てるべきです．(これは通常，両方のコードパスによって
+同じパラメータ作成が呼び出されることを意味します．)
+そして，<code>populate</code>を呼び出し，読み込まれるべきパラーメタを有する
+<code>ParameterCollection</code>オブジェクトに渡します．</p>
+<pre><code class="C++">#include &lt;dynet/io.h&gt;
+//save end
+ParameterCollection m;
+Parameter a = m.add_parameters({100});
+LookupParameter b = m.add_lookup_parameters(10, {100});
+Parameter c = m.add_parameters({1000});
+{
+    dynet::TextFileSaver s(&quot;/tmp/tmp.model&quot;);
+    s.save(m);
+}
+</code></pre>
+
+<pre><code class="C++">//load end
+ParameterCollection m;
+m.add_parameters({100});
+m.add_lookup_parameters(10, {100});
+m.add_parameters({1000});
+{
+    dynet::TextFileLoader l(&quot;/tmp/tmp.model&quot;);
+    l.populate(m);
+}
+</code></pre>
+
+<p>しかしながら，いくつかの場合にはパラメータオブジェクトの一部だけを保存できると便利です．
+(例えば，事前学習のためにパラメータを読み出したい場合などです)</p>
+<p>ここでは，<code>Parameter</code>，もしくは<code>LookupParameter</code>オブジェクトが陽に保存を実行することが
+できることを説明します．ユーザは部分的な保存と読み込みのためにキーを指定することもできます．</p>
+<pre><code class="C++">#include &lt;dynet/io.h&gt;
+//save end
+ParameterCollection m1, m2;
+m1.add_parameters({10}, &quot;a&quot;);
+m1.add_lookup_parameters{10, {2}, &quot;la&quot;);
+Parameter param_b = m2.add_parameters({3, 7});
+{
+    dynet::TextFileSaver s(&quot;/tmp/tmp.model&quot;);
+    s.save(m1, &quot;/namespace_tmp/&quot;);
+    s.save(param_b, &quot;param_b&quot;);
+}
+
+//load end
+ParameterCollection m;
+m.add_parameters({10});
+m.add_lookup_paramters(10, {2});
+{
+    dyent::TextFileLoader l(&quot;/tmp/tmp.model&quot;);
+    l.populate(m, &quot;/namespace_tmp/&quot;);
+    Parameter param_b = m.add_parameters({3, 7});
+    l.populate(param_b, &quot;param_b&quot;);
+}
+
+//load end
+// ユーザーはモデルパラメータを読み込むのと同等のインターフェースを使用可能です．
+ParameterCollection m;
+Parameter parm_a, param_b;
+LookupParameter l_param;
+{
+    dynet::TextFileLoader l(&quot;/tmp/tmp.model&quot;);
+    param_a = l.load_parm(m, &quot;/namespace_tmp/a&quot;);
+    l_param = l.load_lookup_param(m, &quot;/namespace_tmp/la&quot;);
+    param_b = l.load_param(m, &quot;param_b&quot;);
+}
+</code></pre>
+
+<div class="admonition worn">
+<p class="admonition-title">Worn</p>
+<p>以前のdynetのバージョンではビルダーオブジェクトはシリアライズされている必要がありました．
+もはや必要ではありません．（Pythonインターフェースはビルダーオブジェクトのシリアライゼーションを許可します）</p>
+</div>
+<p>現在，dynetは簡易なテキストフォーマットのみをサポートしています．
+この簡単なフォーマットはとてもシンプルで可読性が高いです．このモデルファイルは
+基本的なストレージブロックから構成されています．一つの基本的なブロックは１行目の
+メタデータ情報から始まります．
+<code>#object_type# object_name dimension block_size</code>と残りの部分の実際のデータから構成
+されています．読み込みプロセスの間，dynetはメタデータを使用して
+ユーザが読み込みたいオブジェクトの配置を行います．</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../trouble_shorting/" class="btn btn-neutral float-right" title="トラブルシューティング">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../reference/" class="btn btn-neutral" title="APIリファレンス"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../reference/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../trouble_shorting/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

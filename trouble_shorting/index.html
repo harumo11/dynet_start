@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Qiita - dynet start documentation in Japanese</title>
+  <title>トラブルシューティング - dynet start documentation in Japanese</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Qiita";
-    var mkdocs_page_input_path = "qiita.md";
+    var mkdocs_page_name = "\u30c8\u30e9\u30d6\u30eb\u30b7\u30e5\u30fc\u30c6\u30a3\u30f3\u30b0";
+    var mkdocs_page_input_path = "trouble_shorting.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -63,15 +63,9 @@
     <a class="" href="../common/">一般的な使い方</a>
 	    </li>
           
-            <li class="toctree-l1 current">
+            <li class="toctree-l1">
 		
-    <a class="current" href="./">Qiita</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l2"><a href="#qiita">Qiita</a></li>
-    
-
-    </ul>
+    <a class="" href="../qiita/">Qiita</a>
 	    </li>
           
             <li class="toctree-l1">
@@ -84,9 +78,21 @@
     <a class="" href="../saving_and_loading/">保存と読み込み</a>
 	    </li>
           
-            <li class="toctree-l1">
+            <li class="toctree-l1 current">
 		
-    <a class="" href="../trouble_shorting/">トラブルシューティング</a>
+    <a class="current" href="./">トラブルシューティング</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#_1">トラブルシューティング</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#nvidia-smiapt-install">nvidia-smiがうまく表示されない．apt installを勧められる．</a></li>
+        
+        </ul>
+    
+
+    </ul>
 	    </li>
           
             <li class="toctree-l1">
@@ -121,7 +127,7 @@
     
       
     
-    <li>Qiita</li>
+    <li>トラブルシューティング</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -131,11 +137,13 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="qiita">Qiita</h1>
-<p>DyNetの作者の１人であるodashi_tさんが入門記事を書いています．
-DyNetの使いかたが丁寧に説明されています．
-ぜひ最初の一歩として入門記事を読みましょう．</p>
-<p><a href="https://qiita.com/odashi_t/items/237a34d56e5d2a1df7ae">入門記事</a></p>
+                <h1 id="_1">トラブルシューティング</h1>
+<h3 id="nvidia-smiapt-install">nvidia-smiがうまく表示されない．<code>apt install</code>を勧められる．</h3>
+<p>前日まで問題なく使用できていたということは，前日行った<code>apt upgrade</code>によって
+nvidia関連のライブラリが上書きされてしまった可能性があります．
+この場合は，プロプライエタリなライブラリをもう一度インストールしましょう．</p>
+<pre><code>sudo apt install cuda
+</code></pre>
               
             </div>
           </div>
@@ -143,10 +151,10 @@ DyNetの使いかたが丁寧に説明されています．
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../reference/" class="btn btn-neutral float-right" title="APIリファレンス">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../unorthodox_design/" class="btn btn-neutral float-right" title="Unorthodox Design">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../common/" class="btn btn-neutral" title="一般的な使い方"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../saving_and_loading/" class="btn btn-neutral" title="保存と読み込み"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -172,10 +180,10 @@ DyNetの使いかたが丁寧に説明されています．
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../common/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../saving_and_loading/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../reference/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../unorthodox_design/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

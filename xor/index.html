@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>XOR - dynet start documentation in Japanese</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "XOR";
+    var mkdocs_page_input_path = "xor.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> dynet start documentation in Japanese</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">dynet start documentation in Japanese</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../basic/">ベーシックチュートリアル</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../common/">一般的な使い方</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../qiita/">Qiita</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../reference/">APIリファレンス</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../saving_and_loading/">保存と読み込み</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../trouble_shorting/">トラブルシューティング</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../unorthodox_design/">Unorthodox Design</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">XOR</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#xor">XOR</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#_1">論理ゲート</a></li>
+        
+            <li><a class="toctree-l3" href="#deeplearningxor">Deeplearningから見たXOR</a></li>
+        
+            <li><a class="toctree-l3" href="#xor_1">実際にやってみるXOR</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">dynet start documentation in Japanese</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>XOR</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="xor">XOR</h1>
+<h2 id="_1">論理ゲート</h2>
+<pre><code>A----++++
+      ++++++-----Z
+B----++++
+</code></pre>
+
+<h3 id="and">AND(論理積）</h3>
+<pre><code class="math">論理式: Z = AB
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>Z</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<h3 id="or">OR（論理和）</h3>
+<pre><code class="math">論理式: Z = A+B
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>Z</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<h3 id="not">NOT（論理否定）</h3>
+<pre><code>A-----+++++----Z
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>Z</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="nand-not-of-and">NAND (NOT of AND)</h3>
+<p>全てが１のときのみ０</p>
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>Z</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="xorexclusive-or">XOR(eXclusive OR:排他的論理和）</h3>
+<p>不一致和（A != Bのとき１）</p>
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>Z</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<h2 id="deeplearningxor">Deeplearningから見たXOR</h2>
+<p>適当な入力ベクトルxを入れると，それが1か0かを判定するネットワークを作成する．</p>
+<h3 id="_2">トレーニングデータ</h3>
+<div>
+<div class="MathJax_Preview">
+\begin{equation}
+X= 
+\begin{bmatrix}
+0 &amp; 0 \\
+0 &amp; 1 \\
+1 &amp; 0 \\
+1 &amp; 1 \\
+\end{bmatrix}
+\end{equation}
+</div>
+<script type="math/tex; mode=display">
+\begin{equation}
+X= 
+\begin{bmatrix}
+0 & 0 \\
+0 & 1 \\
+1 & 0 \\
+1 & 1 \\
+\end{bmatrix}
+\end{equation}
+</script>
+</div>
+<div>
+<div class="MathJax_Preview">
+\begin{equation}
+y= 
+\begin{bmatrix}
+0  \\
+1  \\
+1  \\
+0  \\
+\end{bmatrix}
+\end{equation}
+</div>
+<script type="math/tex; mode=display">
+\begin{equation}
+y= 
+\begin{bmatrix}
+0  \\
+1  \\
+1  \\
+0  \\
+\end{bmatrix}
+\end{equation}
+</script>
+</div>
+<h3 id="computation-graph">Computation Graph</h3>
+<p><img alt="image" src="../image/graph.png" /></p>
+<h2 id="xor_1">実際にやってみるXOR</h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a href="https://github.com/clab/dynet/blob/master/examples/xor/train_xor.cc">xor example</a></p>
+</div>
+<h3 id="_3">プログラムの全体像</h3>
+<pre><code class="c++">#include &quot;dynet/training.h&quot;
+#include &quot;dynet/expr.h&quot;
+
+#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+
+using namespace std;
+using namespace dynet;
+
+int main(int argc, char** argv) {
+  dynet::initialize(argc, argv);
+
+  // parameters
+  const unsigned ITERATIONS = 30;
+  ParameterCollection m;
+  SimpleSGDTrainer trainer(m);
+  //MomentumSGDTrainer trainer(m);
+
+  Parameter p_W, p_b, p_V, p_a;
+  const unsigned HIDDEN_SIZE = 3;
+  p_W = m.add_parameters({HIDDEN_SIZE, 2});
+  p_b = m.add_parameters({HIDDEN_SIZE});
+  p_V = m.add_parameters({1, HIDDEN_SIZE});
+  p_a = m.add_parameters({1});
+
+  // train the parameters
+  for (unsigned iter = 0; iter &lt; ITERATIONS; ++iter) {
+
+    ComputationGraph cg;
+    Expression W = parameter(cg, p_W);
+    Expression b = parameter(cg, p_b);
+    Expression V = parameter(cg, p_V);
+    Expression a = parameter(cg, p_a);
+
+    vector&lt;Expression&gt; losses;
+
+    for (unsigned mi = 0; mi &lt; 4; ++mi) {
+
+      bool x1 = mi % 2;
+      bool x2 = (mi / 2) % 2;
+      vector&lt;dynet::real&gt; x_values(2);
+      x_values[0] = x1 ? 1 : -1;
+      x_values[1] = x2 ? 1 : -1;
+      float y_value = (x1 != x2) ? 1 : -1;
+
+      Expression x = input(cg, {2}, x_values);
+      Expression y = input(cg, y_value);
+
+      //Expression h = tanh(W*x + b);
+      Expression h = tanh(affine_transform({b, W, x}));
+      //Expression h = softsign(W*x + b);
+      Expression y_pred = affine_transform({a, V, h});
+      losses.push_back(squared_distance(y_pred, y));
+
+    }
+
+    Expression loss_expr = sum(losses);
+
+    // Print the graph, just for fun.
+    if(iter == 0) {
+      cg.print_graphviz();
+    }
+
+    // Calculate the loss. Batching will automatically be done here.
+    float loss = as_scalar(cg.forward(loss_expr)) / 4;
+    cg.backward(loss_expr);
+    trainer.update();
+
+    cerr &lt;&lt; &quot;E = &quot; &lt;&lt; loss &lt;&lt; endl;
+  }
+
+}
+</code></pre>
+
+<div class="admonition todo">
+<p class="admonition-title">Todo</p>
+<p>referenceを調べて，各関数の説明を付け加える</p>
+</div>
+<h3 id="include">include</h3>
+<pre><code class="c++">#include &lt;dynet/training.h&gt;
+#include &lt;dynet/expr.h&gt;
+
+#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+</code></pre>
+
+<h3 id="namespace">namespace</h3>
+<pre><code class="c++">using namespace std;
+using namespace dynet;
+</code></pre>
+
+<h3 id="initialize">initialize</h3>
+<pre><code class="c++">dynet::initialize(argc, argv);
+</code></pre>
+
+<h3 id="parameter-setting1">parameter setting1</h3>
+<p>全ての重みパラメータwが登録されている<code>ParameterCollection</code>wを作成する．
+そして，その重みパラメータを更新するための<code>SGDTrainer</code>を作成し，
+<code>SGDTrainer</code>に<code>ParameterCollection</code>を渡す．</p>
+<pre><code class="c++">const unsigned ITERATIONS = 30;
+ParameterCollection m;
+SimpleSGDTrainer trainer(m);
+</code></pre>
+
+<h3 id="parameter-setting">parameter setting</h3>
+<pre><code class="c++">Prameter p_W, p_b, p_V, p_a;
+const unsigned HIDDEN_SIZE = 3;
+p_W = m.add_parameters({HIDDEN_SIZE, 2});
+p_b = m.add_parameters({HIDDEN_SIZE});
+p_V = m.add_parameters({1, HIDDEN_SIZE});
+p_a = m.add_parameters({1});
+</code></pre>
+
+<h3 id="train-the-parameters">train the parameters</h3>
+<p>dynetのトレーニングフェーズは<code>for文</code>で回します．</p>
+<pre><code class="c++">for (unsigned inter = 0 iter &lt; ITERATIONS; ++iter) {
+
+    ComputationGraph cg;
+    Expression W = parameter(cg, p_W);
+    Expression b = parameter(cg, p_b);
+    Expression V = parameter(cg, p_V);
+    Expression a = parameter(cg, p_a);
+
+    vector&lt;Expression&gt; losses;
+}
+</code></pre>
+
+<h3 id="_4">教師データ作成</h3>
+<div class="admonition note">
+<p class="admonition-title">三項演算子</p>
+<p>[?:文]は条件分岐処理の１つで，条件が真か偽により処理を分岐します．
+[if文]を短縮して書いたような記述方法になります．</p>
+<p><code>条件式 ? 真の場合の文 : 偽の場合の文</code></p>
+<p>注意点としては条件の分岐結果が変数やリテラルなどの<strong>値</strong>になっていなければ
+ならないことです．よく代入演算子と一緒に利用されます．</p>
+<p><code>bool variable = (result) ? true : false;</code></p>
+</div>
+<pre><code class="c++">for (unsigned mi = 0; mi &lt; 4; ++mi) {
+
+    // 入力ベクトルを作成
+    bool x1 = mi % 2;       // 0 -&gt; false, 1 -&gt; true,  2 -&gt; false, 3 -&gt; true 偶奇判定
+    bool x2 = (mi / 2) % 2; // 0 -&gt; false, 1 -&gt; false, 2 -&gt; true, 3 -&gt; true
+
+    vector&lt;dynet::real&gt; x_values(2);    // dynet::realはfloatと同等
+
+    x_value[0] = x1 ? 1 : -1;
+    x_value[1] = x2 ? 1 : -1;
+    float y_value = (x1 != x2) ? 1 : -1;
+}
+</code></pre>
+
+<p>XORを[0,1]ではなく[-1,1]であわらしていると思われる．４イテレーション全部を
+計算すると下記の表のようになる．</p>
+<table>
+<thead>
+<tr>
+<th>order</th>
+<th>x_value[0]</th>
+<th>x_value[1]</th>
+<th>y_value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>-1</td>
+<td>-1</td>
+<td>-1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>-1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>-1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>1</td>
+<td>1</td>
+<td>-1</td>
+</tr>
+</tbody>
+</table>
+<h3 id="expression">expression</h3>
+<pre><code class="c++">Expression x = input(cg, {2}, x_values);
+Expression y = input(cg, y_value);
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../unorthodox_design/" class="btn btn-neutral" title="Unorthodox Design"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../unorthodox_design/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

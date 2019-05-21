@@ -57,6 +57,8 @@
     
         <ul>
         
+            <li><a class="toctree-l3" href="#dynet">dynet</a></li>
+        
             <li><a class="toctree-l3" href="#installation-for-ubuntu-1804">Installation for Ubuntu 18.04</a></li>
         
         </ul>
@@ -67,7 +69,42 @@
           
             <li class="toctree-l1">
 		
+    <a class="" href="basic/">ベーシックチュートリアル</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="common/">一般的な使い方</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <a class="" href="qiita/">Qiita</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="reference/">APIリファレンス</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="saving_and_loading/">保存と読み込み</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="trouble_shorting/">トラブルシューティング</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="unorthodox_design/">Unorthodox Design</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="xor/">XOR</a>
 	    </li>
           
         </ul>
@@ -103,20 +140,49 @@
             <div class="section">
               
                 <h1 id="dynet-start-documentation-in-japanese">dynet start documentation in Japanese</h1>
+<div class="admonition quote">
+<p class="admonition-title">Quote</p>
+<ul>
+<li><a href="https://dynet.readthedocs.io/en/latest/tutorial.html#c-tutorial">dynet cpp tutorial</a></li>
+<li><a href="http://phontron.com/slides/emnlp2016-dynet-tutorial-part1.pdf">slide</a></li>
+<li><a href="https://github.com/clab/dynet/tree/master/examples">examples</a></li>
+</ul>
+</div>
+<h2 id="dynet">dynet</h2>
+<p>dynetの紹介です．
+qiitaの記事からdynetの紹介文を引用します．</p>
+<blockquote>
+<p>本記事ではニューラルネットワークのフレームワークの一つであるDyNetを簡単に紹介します。</p>
+<p>このフレームワークは米カーネギーメロン大学の言語技術研究所が中心となって開発しているライブラリで、少し縁があって自分も裏で開発に参加しています。自然言語処理の国際会議であるEMNLPのチュートリアルでも使用されて、こちらでも割と人気があったようです。
+DyNetの特徴としては:</p>
+<ul>
+<li>C++とPythonで使用可能</li>
+<li>インクリメンタルなネットワーク計算が可能</li>
+<li>ミニバッチの隠蔽</li>
+</ul>
+<p>が挙げられます。
+2つ目の特徴を持つライブラリとしてはPFNのChainerなども挙げられ、主にrecurrent/recursive neural network系の実装が必要となる自然言語処理等の分野で力を発揮します。
+3つ目の特徴はかなり強力で、ユーザが投げたデータに応じてミニバッチ処理かそうでないか、ミニバッチ処理ならバッチの大きさ等を自動的に判別するので、ネットワークを記述するコード上ではそれを区別する必要がありません。論文に書いてある式をそのまま書けば、基本的には自動的にミニバッチ処理に対応したコードになるわけです。
+メインの対応言語がC++なので、低レベルな領域で他のライブラリと連携したい場合には良い選択肢になるでしょう。DyNet自体はインターフェイスが高度に抽象化されているため、ネットワーク構築部分の見通しは他のフレームワークと比較しても遜色ないと思います。</p>
+</blockquote>
 <h2 id="installation-for-ubuntu-1804">Installation for <strong>Ubuntu 18.04</strong></h2>
 <h3 id="1-cuda">1. cuda</h3>
 <p>(お使いのPCがnvidiaのグラボを積んでない場合は，この章は飛ばしましょう)</p>
 <h4 id="nvidia-driver">Nvidia driver</h4>
-<p>Original web pages are <a href="https://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#installdriver">here</a></p>
-<p>Download file and details are
-<a href="https://developer.nvidia.com/cuda-downloads?target_os=Linux&amp;target_arch=x86_64&amp;target_distro=Ubuntu&amp;target_version=1804&amp;target_type=debnetwork">netwok driver</a></p>
+<p>ドライバーの導入に際して
+<a href="https://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#installdriver">このページ</a>
+を参考にしました．</p>
+<p>また，ドライバーなどのダウンロードは
+<a href="https://developer.nvidia.com/cuda-downloads?target_os=Linux&amp;target_arch=x86_64&amp;target_distro=Ubuntu&amp;target_version=1804&amp;target_type=debnetwork">ここ</a>
+にあります．</p>
+<p>まず，ドライバーをダウンロードして，下記のコマンドでインストールしてください．</p>
 <pre><code>sudo dpkg -i cuda-repo-ubuntu1804_10.1.105-1_amd64.deb 
 sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
 sudo apt update
 sudo apt install cuda
 </code></pre>
 
-<p>After driver installation, try reboot.</p>
+<p>ドライバーのインストールが終了したら，下記のコマンドでパソコンを再起動してください．</p>
 <pre><code>sudo reboot
 </code></pre>
 
@@ -285,7 +351,7 @@ sudo make install
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="qiita/" class="btn btn-neutral float-right" title="Qiita">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="basic/" class="btn btn-neutral float-right" title="ベーシックチュートリアル">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
     </div>
@@ -313,12 +379,13 @@ sudo make install
       
       
       
-        <span style="margin-left: 15px"><a href="qiita/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="basic/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
     <script>var base_url = '.';</script>
     <script src="js/theme.js" defer></script>
+      <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
       <script src="search/main.js" defer></script>
 
 </body>
@@ -326,5 +393,5 @@ sudo make install
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2019-05-08 05:40:41
+Build Date UTC : 2019-05-21 13:44:55
 -->

@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Qiita - dynet start documentation in Japanese</title>
+  <title>一般的な使い方 - dynet start documentation in Japanese</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Qiita";
-    var mkdocs_page_input_path = "qiita.md";
+    var mkdocs_page_name = "\u4e00\u822c\u7684\u306a\u4f7f\u3044\u65b9";
+    var mkdocs_page_input_path = "common.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -58,20 +58,26 @@
     <a class="" href="../basic/">ベーシックチュートリアル</a>
 	    </li>
           
-            <li class="toctree-l1">
-		
-    <a class="" href="../common/">一般的な使い方</a>
-	    </li>
-          
             <li class="toctree-l1 current">
 		
-    <a class="current" href="./">Qiita</a>
+    <a class="current" href="./">一般的な使い方</a>
     <ul class="subnav">
             
-    <li class="toctree-l2"><a href="#qiita">Qiita</a></li>
+    <li class="toctree-l2"><a href="#_1">一般的な使い方</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#_2">初期化・片付け</a></li>
+        
+        </ul>
     
 
     </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../qiita/">Qiita</a>
 	    </li>
           
             <li class="toctree-l1">
@@ -121,7 +127,7 @@
     
       
     
-    <li>Qiita</li>
+    <li>一般的な使い方</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -131,11 +137,40 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="qiita">Qiita</h1>
-<p>DyNetの作者の１人であるodashi_tさんが入門記事を書いています．
-DyNetの使いかたが丁寧に説明されています．
-ぜひ最初の一歩として入門記事を読みましょう．</p>
-<p><a href="https://qiita.com/odashi_t/items/237a34d56e5d2a1df7ae">入門記事</a></p>
+                <h1 id="_1">一般的な使い方</h1>
+<h2 id="_2">初期化・片付け</h2>
+<p>使用するメモリ量とデバイスを最初に指定</p>
+<pre><code>dynet::initialize();
+</code></pre>
+
+<p>指定するために<code>DynetParams</code>構造体に必要な値をセットして渡してやる</p>
+<ul>
+<li>
+<p><code>params.mem_descriptor = "2048"</code></p>
+<p>foward-path, backword-path, パラメータで2048が3等分される</p>
+</li>
+<li>
+<p><code>params.random_seed = 0</code></p>
+<p>０なら適当に初期化</p>
+</li>
+<li>
+<p><code>params.weight_decay = 0.0</code></p>
+<p>L2正則化の強さ, 未だにL2正則化は使うのか？</p>
+</li>
+<li>
+<p><code>params.shared_parameters = false</code></p>
+<p>パラメータをshared memory上に置くかどうか</p>
+</li>
+</ul>
+<p>下記はcudaを使用する場合のみ設定
+下記のように設定するとメモリに余裕があるGPUを勝手に１個選んで使用する</p>
+<pre><code>params.ngpus_requested = false;
+params.ids_requested   = false;
+params.requested_gpus  = -1;
+
+const unsigned int MAX_GPUS = 1024; //適当に大きな値，挿してあるGPUの枚数以上の値にすればよい
+params.gpus_mask       = std::vector&lt;int&gt;(MAX_GPUS, 0);
+</code></pre>
               
             </div>
           </div>
@@ -143,10 +178,10 @@ DyNetの使いかたが丁寧に説明されています．
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../reference/" class="btn btn-neutral float-right" title="APIリファレンス">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../qiita/" class="btn btn-neutral float-right" title="Qiita">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../common/" class="btn btn-neutral" title="一般的な使い方"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../basic/" class="btn btn-neutral" title="ベーシックチュートリアル"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -172,10 +207,10 @@ DyNetの使いかたが丁寧に説明されています．
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../common/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../basic/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../reference/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../qiita/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

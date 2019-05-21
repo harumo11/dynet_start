@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>APIリファレンス - dynet start documentation in Japanese</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "API\u30ea\u30d5\u30a1\u30ec\u30f3\u30b9";
+    var mkdocs_page_input_path = "reference.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> dynet start documentation in Japanese</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">dynet start documentation in Japanese</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../basic/">ベーシックチュートリアル</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../common/">一般的な使い方</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../qiita/">Qiita</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">APIリファレンス</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#api">APIリファレンス</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#core-functionalities">Core functionalities</a></li>
+        
+            <li><a class="toctree-l3" href="#operations">Operations</a></li>
+        
+            <li><a class="toctree-l3" href="#builders">Builders</a></li>
+        
+            <li><a class="toctree-l3" href="#optimizers">Optimizers</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../saving_and_loading/">保存と読み込み</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../trouble_shorting/">トラブルシューティング</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../unorthodox_design/">Unorthodox Design</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../xor/">XOR</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">dynet start documentation in Japanese</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>APIリファレンス</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="api">APIリファレンス</h1>
+<h2 id="core-functionalities">Core functionalities</h2>
+<h3 id="computation-graph">Computation Graph</h3>
+<p><code>ComputationGraph</code>はdynetの主力です．
+<code>Computation graph</code>は計算をシンボル的に表現します．そしてその計算は遅延評価されます．
+つまり，計算はユーザーが陽にそれを命令したときにだけ実行されます(<code>forward</code>計算をトリガーとして)
+スカラー値(例えば，loss valueなど)を評価するための<code>Expression</code>は<code>backword</code>計算をトリガー
+として使用されます．そして，パラメータに関して勾配が計算されます．</p>
+<h3 id="nodes">Nodes</h3>
+<p>ノードは<code>ComputationGraph</code>の構成要素です．
+エンドユーザはノードと直接的にやり取りするのではなく<code>Expression</code>を通して
+やり取りを行います．
+しかしながら，新しい操作の実装のためには以下で説明するノードクラスを継承した
+サブクラスを新しく作る必要があります．</p>
+<h3 id="parameters-and-model">Parameters and Model</h3>
+<p>パラメータは最適化されるべき数値です．計算モジュールが自身のパラメータを有する
+Torchのシステムとは対象的に,dynetではパラメータはただのパラメータです．</p>
+<p>疎なアップデートを処理するために，２つのパラメータクラスが存在します．</p>
+<ul>
+<li><code>Parameters</code>はパラメータのvectorやmatrixを表現します．（最終的により高い次元のテンソル）
+  これらは密に更新されます．</li>
+<li><code>LookupParameters</code>はvectorのテーブルを表現し，離散オブジェクトの集合を組み込むために
+  使用されます．これらは疎に更新されます．</li>
+</ul>
+<h3 id="tensor">Tensor</h3>
+<p><code>Tensor</code>オブジェクトはC++のデータ構造とEigenのTensorsクラスの間の橋渡しをするために
+使用されます．</p>
+<p>具体的には，エンドユーザは<code>.value()</code>をExpressionクラス上で呼んだ後に<code>tensor</code>オブジェクト
+を得ることができます．あなたは以下で説明されているような関数を使用して，それらのtensorを<code>float</code>や
+<code>float</code>のarrayに変換することが可能です．また，それらの値を保存や読み込むことも可能です．</p>
+<p>逆に，ローレベルのノードを実装するときには(例えば新しいoperationsのために)
+あなたはEigenのtensorsからdynetのtensorsに逆変換する必要があります．これは
+Eigenのtensorsを使用すると効率的に計算を実行できるからです．</p>
+<h3 id="dimensions">Dimensions</h3>
+<p><code>Dim</code>クラスはtensorの形状に関する情報を有しています．
+<a href="https://dynet.readthedocs.io/en/latest/unorthodox.html">正統派でないデザイン</a>
+で説明されているように，dynetにおいてdimensionsは一般的な次元+バッチの次元を
+表現しています．このようにすることで計算の透明性を高めています．</p>
+<h2 id="operations">Operations</h2>
+<h3 id="operation-interface">Operation Interface</h3>
+<p>下記の関数はdynetの<code>Expressions</code>を定義します．
+<code>Expression</code>は<code>ComputationGraph</code>を作成するときに使用される様々な関数へのインターフェースとして
+使用されます．</p>
+<h3 id="input-operation">Input Operation</h3>
+<p>これらの操作はあなたに何かをcomputationgraphに投入することを可能にします．
+それは簡単なfloat型のscalar/vector/matrixの入力か,
+もしくはdynet parameter objectからのパラメータの入力のどちらかです．
+それらは全てcomputationgraphに入力として渡される必要があるので
+あなたはこのgraphがどの特定の計算に使用されているかを知ることができます．</p>
+<h3 id="arithmetic-operations">Arithmetic Operations</h3>
+<div class="admonition note">
+<p class="admonition-title">Arighmetic</p>
+<p>Arithmeticは算術，数学，算数という意味</p>
+</div>
+<p>これらの操作はComputationGraph内の値に対して基本的な算術演算を実行します．</p>
+<h3 id="probabilityloss-operations">Probability/Loss Operations</h3>
+<p>これらの操作は確率を計算するために使用されます．
+もしくはトレーニング中に損失関数を計算するために使用されます．</p>
+<h3 id="flowshaping-operations">Flow/Shaping Operations</h3>
+<p>これらの操作は<code>ComputationGraph</code>を流れる情報の流れを制御します．
+もしくは，graph内で使用されているvector/tensorhの形を制御します．</p>
+<h3 id="noise-operations">Noise Operations</h3>
+<p>これらの操作は<code>ComputationGraph</code>にノイズを加えるために使用されます．
+この目的は学習をより頑強なものにするためです．</p>
+<h3 id="tensor-operations">Tensor Operations</h3>
+<p>これらの操作はより高次元のテンソルに対する操作を実行するために使用されます．</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>contraction operation</strong>をコンパイルすることはCUDAにおいて多くの時間を要します．
+CPU実装を使用しているときはデフォルト設定でコンパイルされます．
+もし，あなたがこの操作を必要としているならば，
+ソースコードの
+<a href="https://github.com/clab/dynet/blob/master/dynet/nodes-contract.cc#L11">この行</a>を
+コメント解除してコンパイルしてください．</p>
+</div>
+<h3 id="linear-algebra-operations">Linear Algebra Operations</h3>
+<p>これらの操作は様々な一般的な線形代数の操作を実行します．</p>
+<h3 id="convolution-operations">Convolution Operations</h3>
+<p>これらの操作は<code>convolution</code>に関係しています．</p>
+<h3 id="normalization-operation">Normalization Operation</h3>
+<p>これはバッチ正規化やそれに関係したものを含みます．</p>
+<h3 id="device-operation">Device Operation</h3>
+<p>これらの操作はデバイスに関係したものです．</p>
+<h2 id="builders">Builders</h2>
+<h3 id="softmax-builders">Softmax Builders</h3>
+<p>ソフトマックス層を作成するためのインターフェースです．</p>
+<p><strong>class</strong> SoftmaxBuilder</p>
+<pre><code class="C++">#include &lt;cfsm-builder.h&gt;
+</code></pre>
+
+<h2 id="optimizers">Optimizers</h2>
+<p>あなたがパラメータを調整するための様々な最適化関数(optimizers)</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../saving_and_loading/" class="btn btn-neutral float-right" title="保存と読み込み">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../qiita/" class="btn btn-neutral" title="Qiita"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../qiita/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../saving_and_loading/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>
