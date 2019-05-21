@@ -1,5 +1,10 @@
 # dynet start documentation in Japanese
 
+!!! quote
+	- [dynet cpp tutorial](https://dynet.readthedocs.io/en/latest/tutorial.html#c-tutorial)
+	- [slide](http://phontron.com/slides/emnlp2016-dynet-tutorial-part1.pdf)
+	- [examples](https://github.com/clab/dynet/tree/master/examples)
+
 ## dynet
 
 dynetの紹介です．
