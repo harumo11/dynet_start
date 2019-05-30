@@ -9,6 +9,22 @@
 スカラー値(例えば，loss valueなど)を評価するための`Expression`は`backword`計算をトリガー
 として使用されます．そして，パラメータに関して勾配が計算されます．
 
+!!! note "int dynet::get_number_of_active_graph()"
+	有効なグラフの数を得る．
+	これは０か１です．１以上のグラフを同時に作成できません．
+	*Return 有効なグラフの数*
+
+!!! note "unsigned dynet::get_current_graph_id()"
+	現在有効なグラフのidを得ます．
+	これはグラフが古くなった(stale)かどうかをチェックするのに役立ちます．
+	*Return 現在のグラフのID*
+
+!!! note "struct ComputationGraph"
+	`#include<dynet.h>`
+	ノードが`forward`と`backword`の中間値を表し，辺が複数の値の関数を表す計算グラフ
+
+	この事実を表現するために
+
 ### Nodes
 ノードは`ComputationGraph`の構成要素です．
 エンドユーザはノードと直接的にやり取りするのではなく`Expression`を通して

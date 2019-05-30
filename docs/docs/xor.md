@@ -111,8 +111,9 @@ $$
 ```c++
 #include "dynet/training.h"
 #include "dynet/expr.h"
+#include "dynet/io.h"
+#include "dynet/model.h"
 
-#include <iostream>
 #include <fstream>
 
 using namespace std;
@@ -121,8 +122,9 @@ using namespace dynet;
 int main(int argc, char** argv) {
   dynet::initialize(argc, argv);
 
-  // parameters
   const unsigned ITERATIONS = 30;
+
+  //  ParameterCollection (all the model parameters)
   ParameterCollection m;
   SimpleSGDTrainer trainer(m);
   //MomentumSGDTrainer trainer(m);
@@ -278,18 +280,26 @@ for (unsigned mi = 0; mi < 4; ++mi) {
 	x_value[0] = x1 ? 1 : -1;
 	x_value[1] = x2 ? 1 : -1;
 	float y_value = (x1 != x2) ? 1 : -1;
-}
 ```
 
 XORを[0,1]ではなく[-1,1]であわらしていると思われる．４イテレーション全部を
 計算すると下記の表のようになる．
 
-|order|x_value[0]|x_value[1]|y_value|
-|-----|----------|----------|-------|
-|0    |-1        |-1        |-1     |
-|1    |1         |-1        |1      |
-|2    |-1        |1         |1      |
-|3    |1         |1         |-1     |
+|(indecs)mi|x_value[0]|x_value[1]|y_value|
+|----------|----------|----------|-------|
+|0         |-1        |-1        |-1     |
+|1         |1         |-1        |1      |
+|2         |-1        |1         |1      |
+|3         |1         |1         |-1     |
+
+|A|B|Z|
+|-|-|-|
+|0|0|0|
+|0|1|1|
+|1|0|1|
+|1|1|0|
+
+### 
 
 ### expression
 

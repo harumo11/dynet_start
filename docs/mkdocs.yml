@@ -6,7 +6,6 @@ theme:  readthedocs
 markdown_extensions:
     - admonition
     - pymdownx.arithmatex
-    - mdx_math
 
 extra_javascript:
     - 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
