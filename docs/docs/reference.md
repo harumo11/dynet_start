@@ -1,29 +1,201 @@
 # APIリファレンス
 
+!!! quote 
+	[API Reference](https://dynet.readthedocs.io/en/latest/core.html)
+
 ## Core functionalities
 
 ### Computation Graph
 `ComputationGraph`はdynetの主力です．
 `Computation graph`は計算をシンボル的に表現します．そしてその計算は遅延評価されます．
-つまり，計算はユーザーが陽にそれを命令したときにだけ実行されます(`forward`計算をトリガーとして)
+つまり，計算はユーザーが陽にそれを命令したときにだけ実行されます(`forward`計算をトリガーとして).
 スカラー値(例えば，loss valueなど)を評価するための`Expression`は`backword`計算をトリガー
 として使用されます．そして，パラメータに関して勾配が計算されます．
 
-!!! note "int dynet::get_number_of_active_graph()"
-	有効なグラフの数を得る．
-	これは０か１です．１以上のグラフを同時に作成できません．
-	*Return 有効なグラフの数*
+int dynet::get_number_of_active_graph()
+: 有効なグラフの数を得る．
+これは０か１です．１以上のグラフを同時に作成できません．
 
-!!! note "unsigned dynet::get_current_graph_id()"
-	現在有効なグラフのidを得ます．
-	これはグラフが古くなった(stale)かどうかをチェックするのに役立ちます．
-	*Return 現在のグラフのID*
+	Return
+	: 有効なグラフの数
 
-!!! note "struct ComputationGraph"
-	`#include<dynet.h>`
-	ノードが`forward`と`backword`の中間値を表し，辺が複数の値の関数を表す計算グラフ
+unsigned dynet::get_current_graph_id()
+: 現在有効なグラフのidを得ます．
+これはグラフが古くなった(stale)かどうかをチェックするのに役立ちます．
 
-	この事実を表現するために
+	Return 
+	: 現在のグラフのID
+
+struct ComputationGraph
+: `#include<dynet.h>`
+   <br>ノードが`forward`と`backword`の中間値を表し，エッジが多変数関数を表す計算グラフ
+
+	この事実を表現するために関数は複数の引数を取るでしょう．また，エッジは１つのheadと
+	０，１，２，もしくはそれ以上のtailを持ちます.[有向グラフにおけるheadとtail](https://en.wikipedia.org/wiki/Directed_graph)
+	(定数，入力，また，パラメータは引数が０の関数として表現されます．)
+	例：$z=f(x,y)$という関数が与えらた，x,zとyはノードであり，そしてzノードを指し示す
+	fを表すエッジがあったとすると，xとyはエッジのtailです．あなたは`ComputationGraph`の
+	`backword`以外のメソッドの使用を必要とすべきではない．なぜならそれらの殆どは
+	`Expression`クラスから直接利用可能であるため．
+
+	**Public Functions**
+	
+	ComputaionGraph()
+	: デフォルトコンストラクタ
+
+	VariableIndex add_input(real s, Device *device)	
+	: スカラ値の入力を加える.
+	<br>
+	計算グラフはユーザーのデータ構造から入力をもらい，それを計算に利用する．
+		
+		Return
+		: 作られた変数のインデックス
+
+		Parameters
+		: - s: 実数
+		  - device: 入力値がおかれるデバイス
+	
+	VariableIndex add_input(const Dim &d, const std::vector<float>& data, Device *device)
+	: 複数次元の入力を加える
+	この計算ネットワークはユーザーのデータ構造から入力を受取，それらを計算に利用する．
+		
+		Return
+		: 作成された変数のインデックス
+
+		Parameters
+		: - d: 所望の入力の形
+		 - data: 入力データ(1次元配列としての）
+		 - data: それぞれのインデックスに対応したデータポイント
+		 - device: 入力データが置かれるデバイス
+
+	VariableIndex add_input(const Dim &d, const std::vector<float> *pdata, Device *device)
+	: 複数次元の入力のポインタを加える.
+	計算ネットワークはユーザのデータ構造から入力を受取り，それらを計算に利用する．
+	
+		Return
+		: 作成された変数のインデックス
+
+		Parameters
+		: - d: 所望の入力の形
+		  - pdata: 入力データへのポインタ（１次元配列としての）
+		  - device: 入力値が置かれるデバイス
+
+	VariableIndex add_input(const Dim &d, const std::vector<unsigned int>& ids, const std::vector<float> &data, Device* device float defdata=0.f)
+	: スパースな入力を加える
+	計算ネットワークはユーザのデータ構造から入力を受取り，それらを計算に利用する．
+	オプションのデフォルト値を使って,計算ネットワークへの入力はスパース配列フォーマットで表現してください．
+
+		Return
+		: 作成された変数へのインデックス
+
+		Parameters
+		: - d: 所望の入力の形
+		  - ids: 更新するデータポイントのインデックス
+		  - data: それぞれのインデックスに対応したデータポイント
+		  - device: 入力データが置かれるデバイス
+		  - defdata: 未指定のデータポイントを設定するためのデフォルトデータ
+
+		VariableIndex add_parameters(Parameter p)
+		: 計算グラフにパラメータを加える
+			
+			Return
+			: 作成された変数のインデックス
+
+			Parameters
+			: - p: 加えられたパラメータ
+
+	VariableIndex add_parameters(LookupParameter p)
+	: 計算グラフにルックアップパラメータの完全な行列を加える.
+
+		Return
+		: 作成された変数のインデックス
+
+		Parameters
+		: - p: 加えられるルックアップパラメータ
+
+	VariableIndex add_const_parameters(Parameter p)
+	: 計算グラフに**更新されない**パラメータを加える
+
+		Return
+		: 作成された変数のインデックス
+
+		Parameters
+		: - p: 加えられるパラメータ
+
+	VariableIndex add_const_parameters(LookupParameter p)
+	: **更新されない**ルックアップパラメータの完全な行列を計算グラフに加える
+
+		Return
+		: 作成された変数のインデックス
+
+		Parameters
+		: - p: 加えられるルックアップパラメータ
+
+	VariableIndex add_lookup(LookupParameter p, const unsigned *pindex)
+	: 計算グラフにルックアップパラメータ(シングル)を加える
+	呼び出し元が所有しているインデックスのメモリ位置を指すには`pindex`を使用してください．
+
+		Return
+		: 作成された変数のインデックス
+
+		Parameters
+		: - p: 拾われるルックアップパラメータ
+		: - pindex: ルックアップを指し示すポインタ
+
+	VariableIndex add_lookup(LookupParameter p, unsinged index)
+	: 計算グラフにルックアップパラメータを加える
+
+		Return
+		: 作成された変数のインデックス
+
+		Parameters
+		: - p: 拾われるルックアップパラメータ
+		: - index: ルックアップを指すインデックス
+
+	VariableIndex add_lookup(LookupParameter p, const std::vector<unsigned> *pindecs)
+	: 計算グラフにルックアップパラメータ(複数)を加えましょう
+	呼び出し元が所有しているインデックスのメモリ位置を指すには`pindecs`を使用してください．
+
+		Return
+		: 作成された変数のインデックス
+
+		Parameters
+		: - p: 拾われるルックアップパラメータ
+		: - indeces: ルックアップを指すインデックス(複数)
+
+	VariableIndex add_lookup(LookupParameter p, const std::vector<unsigned> &indices)
+	: ルックアップパラメータを計算グラフに加えます.
+
+		Return
+		: 作成された変数のインデックス
+
+		Parameters
+		: - p: 拾われるルックアップパラメータ
+		: - indeces: ルックアップを指すインデックス(複数)
+
+	!!! note
+		大量の省略あり，余裕があったら和訳しましょうね．
+
+
+	void backward(const Expression &last, bool full = false)
+	: 出力層から順々にバックプロパゲーションを実行します．
+	`full`パラメータは全てのノード(`true`)に対して傾きを計算するかnon-constantなノードだけ計算を行うべきかどうかを指定します．
+	デフォルトでは下記の条件を除いてはノードは普遍です.
+
+		1. パラメータノード
+		2. ノードがnon-constantノードに依存している
+
+		したがって，定数の関数と入力は定数として考えられます．
+
+		傾きを取得したい場合は`full`を`true`にしてください．
+		デフォルトではバックプロパゲーション時に勾配に影響を与えないノードを無視するように`false`に設定されています．
+
+	Parameters
+	: - `last`: 勾配を計算する元の式（`Expression`)
+	  - `full`: 全ての勾配を計算するかどうか（定数ノードを含めるかどうか)
+
+
+
 
 ### Nodes
 ノードは`ComputationGraph`の構成要素です．
