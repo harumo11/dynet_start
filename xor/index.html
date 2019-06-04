@@ -367,8 +367,9 @@ y=
 <h3 id="_3">プログラムの全体像</h3>
 <pre><code class="c++">#include &quot;dynet/training.h&quot;
 #include &quot;dynet/expr.h&quot;
+#include &quot;dynet/io.h&quot;
+#include &quot;dynet/model.h&quot;
 
-#include &lt;iostream&gt;
 #include &lt;fstream&gt;
 
 using namespace std;
@@ -377,8 +378,9 @@ using namespace dynet;
 int main(int argc, char** argv) {
   dynet::initialize(argc, argv);
 
-  // parameters
   const unsigned ITERATIONS = 30;
+
+  //  ParameterCollection (all the model parameters)
   ParameterCollection m;
   SimpleSGDTrainer trainer(m);
   //MomentumSGDTrainer trainer(m);
@@ -513,7 +515,6 @@ p_a = m.add_parameters({1});
     x_value[0] = x1 ? 1 : -1;
     x_value[1] = x2 ? 1 : -1;
     float y_value = (x1 != x2) ? 1 : -1;
-}
 </code></pre>
 
 <p>XORを[0,1]ではなく[-1,1]であわらしていると思われる．４イテレーション全部を
@@ -521,7 +522,7 @@ p_a = m.add_parameters({1});
 <table>
 <thead>
 <tr>
-<th>order</th>
+<th>(indecs)mi</th>
 <th>x_value[0]</th>
 <th>x_value[1]</th>
 <th>y_value</th>
@@ -554,6 +555,38 @@ p_a = m.add_parameters({1});
 </tr>
 </tbody>
 </table>
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>Z</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_5"></h3>
 <h3 id="expression">expression</h3>
 <pre><code class="c++">Expression x = input(cg, {2}, x_values);
 Expression y = input(cg, y_value);

@@ -144,19 +144,405 @@
             <div class="section">
               
                 <h1 id="api">APIリファレンス</h1>
+<div class="admonition quote">
+<p class="admonition-title">Quote</p>
+<p><a href="https://dynet.readthedocs.io/en/latest/core.html">API Reference</a></p>
+</div>
 <h2 id="core-functionalities">Core functionalities</h2>
 <h3 id="computation-graph">Computation Graph</h3>
 <p><code>ComputationGraph</code>はdynetの主力です．
 <code>Computation graph</code>は計算をシンボル的に表現します．そしてその計算は遅延評価されます．
-つまり，計算はユーザーが陽にそれを命令したときにだけ実行されます(<code>forward</code>計算をトリガーとして)
+つまり，計算はユーザーが陽にそれを命令したときにだけ実行されます(<code>forward</code>計算をトリガーとして).
 スカラー値(例えば，loss valueなど)を評価するための<code>Expression</code>は<code>backword</code>計算をトリガー
 として使用されます．そして，パラメータに関して勾配が計算されます．</p>
+<dl>
+<dt>int dynet::get_number_of_active_graph()</dt>
+<dd>
+<p>有効なグラフの数を得る．
+これは０か１です．１以上のグラフを同時に作成できません．</p>
+<dl>
+<dt>Return</dt>
+<dd>有効なグラフの数</dd>
+</dl>
+</dd>
+<dt>unsigned dynet::get_current_graph_id()</dt>
+<dd>
+<p>現在有効なグラフのidを得ます．
+これはグラフが古くなった(stale)かどうかをチェックするのに役立ちます．</p>
+<dl>
+<dt>Return</dt>
+<dd>現在のグラフのID</dd>
+</dl>
+</dd>
+<dt>struct ComputationGraph</dt>
+<dd>
+<p><code>#include&lt;dynet.h&gt;</code>
+   <br>ノードが<code>forward</code>と<code>backword</code>の中間値を表し，エッジが多変数関数を表す計算グラフ</p>
+<p>この事実を表現するために関数は複数の引数を取るでしょう．また，エッジは１つのheadと
+０，１，２，もしくはそれ以上のtailを持ちます.<a href="https://en.wikipedia.org/wiki/Directed_graph">有向グラフにおけるheadとtail</a>
+(定数，入力，また，パラメータは引数が０の関数として表現されます．)
+例：<span><span class="MathJax_Preview">z=f(x,y)</span><script type="math/tex">z=f(x,y)</script></span>という関数が与えらた，x,zとyはノードであり，そしてzノードを指し示す
+fを表すエッジがあったとすると，xとyはエッジのtailです．あなたは<code>ComputationGraph</code>の
+<code>backword</code>以外のメソッドの使用を必要とすべきではない．なぜならそれらの殆どは
+<code>Expression</code>クラスから直接利用可能であるため．</p>
+<p><strong>Public Functions</strong></p>
+<dl>
+<dt>ComputaionGraph()</dt>
+<dd>デフォルトコンストラクタ</dd>
+<dt>VariableIndex add_input(real s, Device *device)</dt>
+<dd>
+<p>スカラ値の入力を加える.
+<br>
+計算グラフはユーザーのデータ構造から入力をもらい，それを計算に利用する．</p>
+<dl>
+<dt>Return</dt>
+<dd>作られた変数のインデックス</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li>s: 実数</li>
+<li>device: 入力値がおかれるデバイス</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>VariableIndex add_input(const Dim &amp;d, const std::vector<float>&amp; data, Device *device)</dt>
+<dd>
+<p>複数次元の入力を加える
+この計算ネットワークはユーザーのデータ構造から入力を受取，それらを計算に利用する．</p>
+<dl>
+<dt>Return</dt>
+<dd>作成された変数のインデックス</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li>d: 所望の入力の形</li>
+<li>data: 入力データ(1次元配列としての）</li>
+<li>data: それぞれのインデックスに対応したデータポイント</li>
+<li>device: 入力データが置かれるデバイス</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>VariableIndex add_input(const Dim &amp;d, const std::vector<float> <em>pdata, Device </em>device)</dt>
+<dd>
+<p>複数次元の入力のポインタを加える.
+計算ネットワークはユーザのデータ構造から入力を受取り，それらを計算に利用する．</p>
+<dl>
+<dt>Return</dt>
+<dd>作成された変数のインデックス</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li>d: 所望の入力の形</li>
+<li>pdata: 入力データへのポインタ（１次元配列としての）</li>
+<li>device: 入力値が置かれるデバイス</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>VariableIndex add_input(const Dim &amp;d, const std::vector<unsigned int>&amp; ids, const std::vector<float> &amp;data, Device* device float defdata=0.f)</dt>
+<dd>
+<p>スパースな入力を加える
+計算ネットワークはユーザのデータ構造から入力を受取り，それらを計算に利用する．
+オプションのデフォルト値を使って,計算ネットワークへの入力はスパース配列フォーマットで表現してください．</p>
+<dl>
+<dt>Return</dt>
+<dd>作成された変数へのインデックス</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li>d: 所望の入力の形</li>
+<li>ids: 更新するデータポイントのインデックス</li>
+<li>data: それぞれのインデックスに対応したデータポイント</li>
+<li>device: 入力データが置かれるデバイス</li>
+<li>defdata: 未指定のデータポイントを設定するためのデフォルトデータ</li>
+</ul>
+</dd>
+<dt>VariableIndex add_parameters(Parameter p)</dt>
+<dd>
+<p>計算グラフにパラメータを加える</p>
+<dl>
+<dt>Return</dt>
+<dd>作成された変数のインデックス</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li>p: 加えられたパラメータ</li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt>VariableIndex add_parameters(LookupParameter p)</dt>
+<dd>
+<p>計算グラフにルックアップパラメータの完全な行列を加える.</p>
+<dl>
+<dt>Return</dt>
+<dd>作成された変数のインデックス</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li>p: 加えられるルックアップパラメータ</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>VariableIndex add_const_parameters(Parameter p)</dt>
+<dd>
+<p>計算グラフに<strong>更新されない</strong>パラメータを加える</p>
+<dl>
+<dt>Return</dt>
+<dd>作成された変数のインデックス</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li>p: 加えられるパラメータ</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>VariableIndex add_const_parameters(LookupParameter p)</dt>
+<dd>
+<p><strong>更新されない</strong>ルックアップパラメータの完全な行列を計算グラフに加える</p>
+<dl>
+<dt>Return</dt>
+<dd>作成された変数のインデックス</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li>p: 加えられるルックアップパラメータ</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>VariableIndex add_lookup(LookupParameter p, const unsigned *pindex)</dt>
+<dd>
+<p>計算グラフにルックアップパラメータ(シングル)を加える
+呼び出し元が所有しているインデックスのメモリ位置を指すには<code>pindex</code>を使用してください．</p>
+<dl>
+<dt>Return</dt>
+<dd>作成された変数のインデックス</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li>p: 拾われるルックアップパラメータ</li>
+</ul>
+</dd>
+<dd>
+<ul>
+<li>pindex: ルックアップを指し示すポインタ</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>VariableIndex add_lookup(LookupParameter p, unsinged index)</dt>
+<dd>
+<p>計算グラフにルックアップパラメータを加える</p>
+<dl>
+<dt>Return</dt>
+<dd>作成された変数のインデックス</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li>p: 拾われるルックアップパラメータ</li>
+</ul>
+</dd>
+<dd>
+<ul>
+<li>index: ルックアップを指すインデックス</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>VariableIndex add_lookup(LookupParameter p, const std::vector<unsigned> *pindecs)</dt>
+<dd>
+<p>計算グラフにルックアップパラメータ(複数)を加えましょう
+呼び出し元が所有しているインデックスのメモリ位置を指すには<code>pindecs</code>を使用してください．</p>
+<dl>
+<dt>Return</dt>
+<dd>作成された変数のインデックス</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li>p: 拾われるルックアップパラメータ</li>
+</ul>
+</dd>
+<dd>
+<ul>
+<li>indeces: ルックアップを指すインデックス(複数)</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>VariableIndex add_lookup(LookupParameter p, const std::vector<unsigned> &amp;indices)</dt>
+<dd>
+<p>ルックアップパラメータを計算グラフに加えます.</p>
+<dl>
+<dt>Return</dt>
+<dd>作成された変数のインデックス</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li>p: 拾われるルックアップパラメータ</li>
+</ul>
+</dd>
+<dd>
+<ul>
+<li>indeces: ルックアップを指すインデックス(複数)</li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>大量の省略あり，余裕があったら和訳しましょうね．</p>
+</div>
+<dl>
+<dt>void clear()</dt>
+<dd>計算グラフをリセットし，新規に作成された状態にします．</dd>
+<dt>void checkpoint()</dt>
+<dd>チェックポイントを作成します．</dd>
+<dt>void revert()</dt>
+<dd>最後のチェックポイントときの状態に戻ります．</dd>
+<dt>const Tensor&amp; forward(VariableIndex i)</dt>
+<dd>
+<p>事前に計算されている全ての値を無視して最初のノードから指定されたノードへの完全な<code>forward</code>（順伝播）を実行．</p>
+<dl>
+<dt>Return</dt>
+<dd>実行したあとの最後のノードの値</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li>i: <code>forword</code>（順伝播）が計算された後の最新のノードの変数インデックス</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>const Tensor&amp; incrimental_forward(const Expression&amp; last)</dt>
+<dd>
+<p><code>forward</code>（順伝播）を最後に計算されたノードから指定されたノードまで計算する．
+もしあなたが，ノードを追加し，そして新しい部分のみを評価したいなら，その場合に便利です．</p>
+<dl>
+<dt>Return</dt>
+<dd>実行した後の<code>last Expression</code>の値</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li><code>last</code>: 順伝播を計算する必要がある式(Expression)</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>const Tensor&amp; incrimental_forward(VariableIndex i)</dt>
+<dd>
+<p><code>forward</code>（順伝播）を最後に計算されたノードから指定されたノードまで計算する．
+もしあなたが，ノードを追加し，そして新しい部分のみを評価したいなら，その場合に便利です．</p>
+<dl>
+<dt>Return</dt>
+<dd>実行した後の最後のノードの値</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li><code>last</code>: 順伝播を計算する必要がある式(Expression)</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>void backward(const Expression &amp;last, bool full = false)</dt>
+<dd>
+<p>出力層から順々にバックプロパゲーションを実行します．
+<code>full</code>パラメータは全てのノード(<code>true</code>)に対して傾きを計算するかnon-constantなノードだけ計算を行うべきかどうかを指定します．
+デフォルトでは下記の条件を除いてはノードは普遍です.</p>
+<ol>
+<li>パラメータノード</li>
+<li>ノードがnon-constantノードに依存している</li>
+</ol>
+<p>したがって，定数の関数と入力は定数として考えられます．</p>
+<p>傾きを取得したい場合は<code>full</code>を<code>true</code>にしてください．
+デフォルトではバックプロパゲーション時に勾配に影響を与えないノードを無視するように<code>false</code>に設定されています．</p>
+<dl>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li><code>last</code>: 勾配を計算する元の式（<code>Expression</code>)</li>
+<li><code>full</code>: 全ての勾配を計算するかどうか（定数ノードを含めるかどうか)</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>void backward(VariableIndex i, bool full-false)</dt>
+<dd>
+<p>ノード<code>i</code>から逆伝播を実行します．（ノードiはすでに評価されていると必要があります)
+<code>full</code>パラメータは全てのノード(<code>true</code>)に対して傾きを計算するかnon-constantなノードだけ計算を行うべきかどうかを指定します．
+デフォルトでは下記の条件を除いてはノードは普遍です.</p>
+<ol>
+<li>パラメータノード</li>
+<li>ノードがnon-constantノードに依存している</li>
+</ol>
+<p>したがって，定数の関数と入力は定数として考えられます．</p>
+<p>傾きを取得したい場合は<code>full</code>を<code>true</code>にしてください．
+デフォルトではバックプロパゲーション時に勾配に影響を与えないノードを無視するように<code>false</code>に設定されています．</p>
+<dl>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li><code>i</code>: どのノードから計算を始めるかを指し示すノードのインデックス</li>
+<li><code>full</code>: 全ての勾配を計算するかどうか（定数ノードを含めるかどうか)
+    もしあなたが傾きを検索したいならこれを有効にしてください．
+    デフォルト設定では逆伝播に関係ない勾配計算を省き効率を高めるために,
+    これはオフになっています，</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>void print_graphviz()</dt>
+<dd>デバッグのために使用されます</dd>
+<dt>unsigned get_id() const</dt>
+<dd>
+<p>計算グラフ（ネットワーク）のユニークIDを取得します．
+このIDは計算グラフが各エポックごとに作成され，１づつ増加します．</p>
+<dl>
+<dt>Return</dt>
+<dd>グラフID</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
 <h3 id="nodes">Nodes</h3>
 <p>ノードは<code>ComputationGraph</code>の構成要素です．
 エンドユーザはノードと直接的にやり取りするのではなく<code>Expression</code>を通して
 やり取りを行います．
 しかしながら，新しい操作の実装のためには以下で説明するノードクラスを継承した
 サブクラスを新しく作る必要があります．</p>
+<dl>
+<dt>struct Node</dt>
+<dd><code>#include&lt;dynet.h&gt;</code>
+計算ノードに関する情報が含まれています．:引数，出力値，関数に関する出力の勾配．
+このクラスは新しい操作(operation)の実装時には継承される必要があります．
+例はnodes.ccを見てください．新しい式の操作(operation)は<code>Node</code>から作成されます．
+例はexpr.h/expr.ccを見てください．</dd>
+</dl>
+<p><strong>Public Functions</strong></p>
+<dl>
+<dt>virtual std::string as_string(const std::vector<std::string>&amp; args) const = 0</dt>
+<dd>
+<p>デバッグに重要な情報を返します．詳しくはnodes-conv.ccを見てください．</p>
+<dl>
+<dt>Return</dt>
+<dd>ノードの説明（string)</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li><code>args</code>: 引数の説明(string)</li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
 <h3 id="parameters-and-model">Parameters and Model</h3>
 <p>パラメータは最適化されるべき数値です．計算モジュールが自身のパラメータを有する
 Torchのシステムとは対象的に,dynetではパラメータはただのパラメータです．</p>
@@ -186,12 +572,312 @@ Eigenのtensorsを使用すると効率的に計算を実行できるからで�
 <p>下記の関数はdynetの<code>Expressions</code>を定義します．
 <code>Expression</code>は<code>ComputationGraph</code>を作成するときに使用される様々な関数へのインターフェースとして
 使用されます．</p>
+<dl>
+<dt>struct Expression</dt>
+<dd>
+<p><code>#include&lt;expr.h&gt;</code>
+ExpressionはDynetの計算グラフを構成するブロックです．</p>
+<p><strong>Public Functions</strong></p>
+<dl>
+<dt>Expression(ComputationGraph<em> </em>pg, VariableIndex i)</dt>
+<dd>
+<p>コンストラクタ．操作（Operation)を作成するときに使用します．</p>
+<dl>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li><code>pg</code>: 計算グラフのポインタ</li>
+<li><code>i</code> : 変数インデックス</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>const Tensor&amp; value() const</dt>
+<dd>
+<p>expression(式)の値を得ます．
+計算グラフが利用可能でない場合はruntime_errorが投げられます．</p>
+<dl>
+<dt>Return</dt>
+<dd>テンソル形式の式の値</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>オリジナルではThrows a runtiime_errorとタイポがあったのでマープルしておく</p>
+</div>
+<dl>
+<dt>const Tensor&amp; gradient() const</dt>
+<dd>
+<p>式(Expression)の傾きを得る
+計算グラフが利用可能でない場合はruntime_errorが投げられます．</p>
+<dl>
+<dt>Return</dt>
+<dd>テンソル形式の値</dd>
+</dl>
+</dd>
+</dl>
+<p>この関数を呼ぶ前に<code>backword</code>を下流の式で呼び出してください．</p>
+<p>もし，式が定数を表現しているならば（これは関数がパラメータを有していないことを意味している）
+dynetは効率のためにその勾配を計算しようとはしません．<code>backword</code>の<code>full=true</code>引数を加えることによって
+手動で強制的に計算をさせることができます．</p>
+<dl>
+<dt>const Dim&amp; dim() const</dt>
+<dd>
+<p>表現の次元を求めます．
+計算グラフが利用可能でない場合はruntime_errorが投げられます．</p>
+<dl>
+<dt>Return</dt>
+<dd>表現(expression)の次元</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
 <h3 id="input-operation">Input Operation</h3>
 <p>これらの操作はあなたに何かをcomputationgraphに投入することを可能にします．
 それは簡単なfloat型のscalar/vector/matrixの入力か,
 もしくはdynet parameter objectからのパラメータの入力のどちらかです．
 それらは全てcomputationgraphに入力として渡される必要があるので
 あなたはこのgraphがどの特定の計算に使用されているかを知ることができます．</p>
+<dl>
+<dt>Expression dynet::input(ComputationGraph&amp; g, real s, Device* devide = dynet::default_device)</dt>
+<dd>
+<p>scalar input
+スカラ値を表現するexpression(式）を作成します．</p>
+<dl>
+<dt>Return</dt>
+<dd>sを表現するExpression</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li><code>g</code>: 計算グラフ</li>
+<li><code>s</code>: 実数</li>
+<li><code>device</code>: 入力値が置かれるデバイス，default_deviceがデフォルトで選択される．</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Expression dynet::(ComputationGraph&amp; g, const real<em> ps, Device</em> device = dynet::default_device)</dt>
+<dd>
+<p>更新可能なスカラー値の入力</p>
+<p>スカラ値<code>*ps</code>を表現するExpression(式）を作成する．もし，<code>*ps</code>が変更され，かつ，計算グラフが再計算された場合，次の順伝播(forward)はその値を反映します．</p>
+<dl>
+<dt>Return</dt>
+<dd><code>*ps</code>を表すExpression（式）</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li><code>g</code>: 計算グラフ</li>
+<li><code>ps</code>: 実数のポインタ</li>
+<li><code>device</code>: 入力値が置かれるデバイス，default_deviceがデフォルトで選択される．</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Expression dynet::input(ComputationGraph&amp; g, const Dim&amp; d, const std::vector<float>&amp; data, Device* divice = dynet::default_device)</dt>
+<dd>
+<p>ベクター，行列，テンソルの入力</p>
+<p>vecotr, matrix, tensorの入力を表現するExpression(式）を作成する．
+入力の次元は<code>d</code>によって定義される．よって例えば，<code>input(g, {50}, data)</code>:
+という引数は要素数50のベクターを表す．<code>input(g, {50, 30}, data)</code>:という
+引数は50x30の行列を表現している．これにより任意の次元を表すことができます．
+この関数はミニバッチに分割された入力の読み込みにも使用できます．
+たとえば，１つのミニバッチに１０個の教師データ(サイズは50x30)があった場合，
+<code>input(g, Dim({50, 30}, 10) data)</code>とすることで表現できます．
+データベクター<strong>data</strong>は入力で使用されるための値で満たされており，
+列優先ベクトル形式です．<code>d</code>は全てのデータの個数の掛け算で表される要素のサイズです．</p>
+<dl>
+<dt>Return</dt>
+<dd>データを表現したExpression(式)</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li><code>g</code>: 計算グラフ</li>
+<li><code>d</code>:入力行列の次元</li>
+<li><code>data</code>:データ点(一つのデータ）のベクター</li>
+<li><code>device</code>: 入力値が置かれるデバイス，default_deviceがデフォルトで選択される．</li>
+</ul>
+</dd>
+<dt>Expression dynet::input(ComputationGraph&amp; g, const Dim&amp; d, const std::vector<float><em> padata, Device</em> device = dynet::default_device)</dt>
+<dd>更新可能なvector/matrix/tensorの入力
+vectorを参照渡しで渡す入力と似ています．しかし，この関数はポインタ渡しをすることによってデータを更新することが出来ます．</dd>
+<dt>Return</dt>
+<dd>*pdataの表現のExpression(式)</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li><code>g</code>: 計算グラフ</li>
+<li><code>d</code>: 行列の次元</li>
+<li><code>pdata</code>: ポインタ渡しの(更新可能な)データ点のベクトル</li>
+<li><code>device</code>: 入力値が置かれるデバイス，default_deviceがデフォルトで選択される．</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Expression dynet::input(ComputationGraph&amp; g, const Dim&amp; d, const std::vector<unsinged int>&amp; ids, const std::vector<float>&amp; data, float defdata = 0.f, Device* device = dynet::default_device)</dt>
+<dd>
+<p>スパース（疎）なベクトルの入力
+この操作は入力としてインデックスと値がペアになったスパース行列を取ります．
+これはベクターの参照渡しの標準入力と全く同じです．しかし，指定していない全ての値を
+<strong>defdata</strong>に設定し，その他の入力の値を適切にリセットしてください．</p>
+<dl>
+<dt>Return</dt>
+<dd>dataの表現のExpression（式）</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li><code>g</code>: 計算グラフ</li>
+<li><code>d</code>: 入力行列の次元</li>
+<li><code>ids</code>: 更新するデータ点のインデックス</li>
+<li><code>defdata</code>: 未指定のデータ点を設定するためのデフォルトデータ</li>
+<li><code>device</code>: 入力値が置かれるデバイス，default_deviceがデフォルトで選択される．</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Expression dynet::one_hot(ComputaionGraph&amp;g , unsigned int d, unsigned int idx, Device* device = dynet::default_devaice)</dt>
+<dd>
+<p>ワンーホットベクトル
+ワンホット表現のベクトルを作成します．</p>
+<dl>
+<dt>Return</dt>
+<dd>データを表現したExpression(式）</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li><code>g</code>: 計算グラフ</li>
+<li><code>d</code>: 入力ベクトルの次元</li>
+<li><code>idx</code>: 1をセットしたいインデックス</li>
+<li><code>device</code>: 入力値が置かれるデバイス，default_deviceがデフォルトで選択される．</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Expression dyent::one_hot(ComputationGraph&amp; g, unsigned int d, const std::vector<unsigned int>&amp; ids, Device* device = dynet::default_device)</dt>
+<dd>
+<p>バッチ用のワンホットベクトル</p>
+<p>この操作はワンホットベクトルのバッチを作成します．<code>ids</code>の大きさによりバッチサイズを決定します．</p>
+<dl>
+<dt>Return</dt>
+<dd>dataを表現したExpression</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li><code>g</code>: 計算グラフ</li>
+<li><code>d</code>: 入力ベクトルの次元</li>
+<li><code>ids</code>: １を設定したいインデックス，バッチエレメントごとに一つ</li>
+<li><code>device</code>: 入力値が置かれるデバイス，default_deviceがデフォルトで選択される．</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Expression dynet::parameter(ComputationGraph &amp;g, Parater p)</dt>
+<dd>
+<p>パラメータを読み込みます．
+計算グラフの中にパラメータを読み込み反映します．</p>
+<dl>
+<dt>Return</dt>
+<dd>パラメータpを表現したExpression(式)</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li><code>g</code>: 計算グラフ</li>
+<li><code>p</code>: 読み込まれるパラメータオブジェクト</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Expression dynet::parameter(ComputationGraph&amp; g, LookupParameter lp)</dt>
+<dd>
+<p>ルックアップパラメータを読み込みます．</p>
+<p>ルックアップパラメータの完全なテンソルを計算グラフに読み込みます．
+通常，ルックアップパラメータには<code>lookup()</code>関数を使用してアクセスします．
+しかし，いくつかの場合では，何らかの理由によりルックアップパラメータ全部のパラメータにアクセスしたいことがあります．
+このような場合には，返されたテンソルの最初の次元は<code>lookup()</code>関数を読んだ場合に示す次元と同じになります．
+そして，最後の次元のサイズはボキャブラリのサイズと等しくなります．</p>
+<dl>
+<dt>Return</dt>
+<dd>lpが表現されたExpression（式）</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li><code>g</code>: 計算グラフ</li>
+<li><code>lp</code>: 読み込まれるLookupParametersオブジェクト</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Expression dynet::const_parameter(ComputationGraph&amp; g, Parameter p)</dt>
+<dd>
+<p>変更不可なパラメータの読み込み
+パラメータを計算グラフに読み込みます．しかし，パラメータアップデートが行われた際に
+アップデートを防ぐことができます．</p>
+<dl>
+<dt>Return</dt>
+<dd>定数pが表現されたExpression(式)</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li><code>g</code>: 計算グラフ</li>
+<li><code>p</code>: 読み込まれるパラメータオブジェクト</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Expression dynet::const_parameter(ComputatinGraph&amp; g, LookupParameter lp)</dt>
+<dd>
+<p>ルックアップパラメータを読み込みます．
+ルックアップパラメータを計算グラフの中に読み込みます．しかし，パラメータ更新による変更
+を避けることができ，パラメータは変更されません．</p>
+<dl>
+<dt>Return</dt>
+<dd>lpが表現されたExpression（式）</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li><code>g</code>: 計算グラフ</li>
+<li><code>lp</code>: 読み込まれるLookupParameterオブジェクト</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Expression dynet::lookup(ComputationGraph&amp; g, LookupParameter p, unsigned index)</dt>
+<dd>
+<p>パラメータを調べる．
+インデックスを参照してパラメータを調べます．そして，それを計算グラフの中に読み込みます．</p>
+<dl>
+<dt>Return</dt>
+<dd>p[index]が表現されたExpression(式）</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li><code>g</code>: 計算グラフ</li>
+<li><code>p</code>: 読み込まれるLookupParameterオブジェクト</li>
+<li><code>index</code>: ルックアップパラメータpの中にあるパラメータのインデックス</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Expression dynet::lookup(ComputatinGraph&amp; g, LookupParameter p, const std::vector<unsigned>&amp; indics)</dt>
+<dd>
+<p>パラメータを調べます.
+<strong>ミニバッチバージョン</strong>の<code>lookup()</code>.結果のExpression(式）はミニバッチに対応したパラメータになります．
+ここでは，バッチのi番目の要素はi番目の要素のインデックスによって指定された位置にあるパラメータに対応します．</p>
+<dl>
+<dt>Return</dt>
+<dd>p[indics[i]]を表現するi番目の要素のExpression</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li><code>g</code>: 計算グラフ</li>
+<li><code>p</code>: 読み込まれるLookupParameterオブジェクト</li>
+<li><code>indices</code>: バッチのそれぞれの位置におけるパラメータのインデックス．</li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
 <h3 id="arithmetic-operations">Arithmetic Operations</h3>
 <div class="admonition note">
 <p class="admonition-title">Arighmetic</p>
