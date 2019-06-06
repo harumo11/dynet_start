@@ -108,6 +108,9 @@ $$
 
 ### プログラムの全体像
 
+!!! note 
+	[xorの数学的解説](http://gtech.hatenablog.com/entry/2016/07/30/141647)
+
 ```c++
 #include "dynet/training.h"
 #include "dynet/expr.h"

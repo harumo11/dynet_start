@@ -5,50 +5,93 @@
 #include <dynet/io.h>
 #include <dynet/model.h>
 
-//	ベクトルをprintするためのヘルパ関数
-void print_vector(const std::vector<dynet::real>& values){
-	for (auto&& val : values){
-		std::cout << static_cast<float>(val) << "\t";
-	}
-	std::cout << std::endl;
-}
-
-void run(){
-	//	scalar version
-	std::cout << "D0 " << std::endl;
-	dynet::ComputationGraph cg;
-	std::cout << "D1 " << std::endl;
-	dynet::Expression input_expr = dynet::input(cg, 1.0f);
-	std::cout << "D2 " << std::endl;
-	dynet::Expression output_expr = 2.0f * input_expr + 3.0f;
-	// dynet::realは今の所floatと等価
-	std::cout << "D3 " << std::endl;
-	dynet::real output_value = dynet::as_scalar(cg.forward(output_expr));
-	std::cout << static_cast<float>(output_value) << std::endl;
-
-	//	vector version
-	//std::vector<float> input_values = {1.0, 2.0, 3.0};
-	
-	//	第二引数で次元を指定する
-	//	一次元の場合は縦ベクトルになる
-	//input_expr = dynet::input(cg, {3}, input_values);
-	//output_expr = 2.0f * input_expr + 3.0;
-	//std::vector<dynet::real> output_values = dynet::as_vector(cg.forward(output_expr));
-	//print_vector(output_values);
-
-	//	行列の場合はベクトルにpackした値をやり取りする
-	//	値は縦方向に入る．つまり
-	//	[[1, 3],
-	//	 [2, 4]]
-	//input_values = {1.0, 2.0, 3.0, 4.0};
-	//input_expr = dynet::input(cg, {2, 2}, input_values);
-	//output_expr = 2.0 * input_expr + 3;
-	//output_values = dynet::as_vector(cg.forward(output_expr));
-	//print_vector(output_values);
-}
-
-int main(int argc, char const* argv[])
+int main(int argc, char* argv[])
 {
-	run();
+	
+	// dynetの初期化
+	dynet::initialize(argc, argv);
+
+	// 設定
+	const int ITERATIONS = 30;
+
+	// パラメータコレクションの作成
+	// パラメータとは我々が最適化するもののこと(vector/matrix)
+	// モデルはパラメータの集合体
+	dynet::ParameterCollection m;
+	dynet::SimpleSGDTrainer trainer(m);
+
+	const unsigned int HIDEEN_SIZE = 8;
+	// 8x2のサイズのパラメータ（matrix)を作成
+	dynet::Parameter p_W = m.add_parameters({HIDEEN_SIZE, 2});
+	// 8x1のサイズのパラメータ（vector)を作成
+	dynet::Parameter p_b = m.add_parameters({HIDEEN_SIZE});
+	// 1x8のサイズのパラメータ（matrix)を作成
+	dynet::Parameter p_V = m.add_parameters({1, HIDEEN_SIZE});
+	// 1のスカラーパラメータを作成
+	dynet::Parameter p_a = m.add_parameters({1});
+
+	if (argc == 2) {
+		// もし，ファイルからパラメータとモデルがロード可能ならばロードする
+		dynet::TextFileLoader loader(argv[1]);
+		loader.populate(m);
+	}
+
+	// 静的な計算グラフの宣言
+	dynet::ComputationGraph cg;
+	dynet::Expression W = dynet::parameter(cg, p_W);
+	dynet::Expression b = dynet::parameter(cg, p_b);
+	dynet::Expression V = dynet::parameter(cg, p_V);
+	dynet::Expression a = dynet::parameter(cg, p_a);
+
+	// ネットワークへの入力を変更するためにx_valueを宣言し，参照渡しをします．
+	std::vector<dynet::real> x_value(2);
+	dynet::Expression x = dynet::input(cg, {2}, &x_value);
+	// ターゲットとする出力を変更するためにy_valueを宣言し，参照渡しをします．
+	dynet::real y_value;
+	dynet::Expression y = dynet::input(cg, &y_value);
+
+	dynet::Expression h = dynet::tanh(W*x+b);
+	dynet::Expression y_pred = V*h+a;
+	dynet::Expression loss_expr = dynet::squared_distance(y_pred, y);
+
+	// 作成したグラフを描いてみせる，それが僕には楽しかったから
+	cg.print_graphviz();
+
+	// パラメータをトレーニングする
+	for (unsigned iter = 0; iter < ITERATIONS; ++iter) {
+		double loss = 0;
+		for (unsigned mi = 0; mi < 4; ++mi) {
+			bool x1 = mi%2;			//0->false, 1->true,  2->false, 3->true(奇数or偶数)
+			bool x2 = (mi / 2)%2;	//0->false, 1->false, 2->true,  3->true
+			std::cout << "x1 : x2 " << x1 << "\t" << x2 << std::endl;
+			x_value[0] = x1 ? 1 : -1;
+			x_value[1] = x2 ? 1 : -1;
+			std::cout << "x_value[0] : " << x_value[0] << "\t" << "x_value[1] : " << x_value[1] << std::endl;
+			y_value = (x1 != x2) ? 1 : -1;
+			loss += dynet::as_scalar(cg.forward(loss_expr));
+			cg.backward(loss_expr);
+			trainer.update();
+		}
+		loss /= 4;
+		std::cout << "E = " << loss << std::endl;
+	}
+
+	// トレーニングした結果を試してみる
+	x_value[0] = -1;
+	x_value[1] = -1;
+	cg.forward(loss_expr);
+	std::cout << "[-1,-1] -1 : " << dynet::as_scalar(y_pred.value()) << std::endl;;
+	x_value[0] = -1;
+	x_value[1] = 1;
+	cg.forward(loss_expr);
+	std::cout << "[-1, 1]  1 : " << dynet::as_scalar(y_pred.value()) << std::endl;;
+	x_value[0] = 1;
+	x_value[1] = -1;
+	cg.forward(loss_expr);
+	std::cout << "[ 1,-1]  1 : " << dynet::as_scalar(y_pred.value()) << std::endl;;
+	x_value[0] = 1;
+	x_value[1] = 1;
+	cg.forward(loss_expr);
+	std::cout << "[ 1, 1] -1 : " << dynet::as_scalar(y_pred.value()) << std::endl;;
 	return 0;
 }
