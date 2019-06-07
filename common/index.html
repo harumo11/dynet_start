@@ -72,6 +72,25 @@
         </ul>
     
 
+    <li class="toctree-l2"><a href="#_3">用語の解説</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#_4">主なプレイヤー</a></li>
+        
+            <li><a class="toctree-l3" href="#computation-graph-and-expression">Computation Graph and Expression</a></li>
+        
+            <li><a class="toctree-l3" href="#model-and-parameters">Model and Parameters</a></li>
+        
+            <li><a class="toctree-l3" href="#parameter-initialization">Parameter Initialization</a></li>
+        
+            <li><a class="toctree-l3" href="#trainer-and-backdrop">Trainer and backdrop</a></li>
+        
+            <li><a class="toctree-l3" href="#training-with-dynet">Training with DyNet</a></li>
+        
+        </ul>
+    
+
     </ul>
 	    </li>
           
@@ -171,6 +190,57 @@ params.requested_gpus  = -1;
 const unsigned int MAX_GPUS = 1024; //適当に大きな値，挿してあるGPUの枚数以上の値にすればよい
 params.gpus_mask       = std::vector&lt;int&gt;(MAX_GPUS, 0);
 </code></pre>
+
+<h1 id="_3">用語の解説</h1>
+<h2 id="_4">主なプレイヤー</h2>
+<ul>
+<li>Computation Graph : 計算グラフ</li>
+<li>Expressions (計算グラフ内のノードのこと) : 式</li>
+<li>Parameters : パラメータ</li>
+<li>Model (パラメータの集合のこと） : モデル</li>
+<li>Trainer : トレーナー</li>
+</ul>
+<h2 id="computation-graph-and-expression">Computation Graph and Expression</h2>
+<ol>
+<li>基本的なExpression（ノード）を作成する</li>
+<li>それら（ノード）をoperatorを使って組み合わせる</li>
+</ol>
+<h2 id="model-and-parameters">Model and Parameters</h2>
+<ul>
+<li>Parametersの実態はvectorやmatrixで，最適化を施される変数です</li>
+<li>Modelはパラメータの集合です</li>
+<li>ParametersはComputation graphより寿命が長い</li>
+</ul>
+<pre><code class="C++">const int HIDDEN_SIZE = 8;
+dynet::ParameterCollection model;
+// Create parameter
+dynet::Parameter p_W = model.add_parameters({HIDDEN_SIZE, 2});
+// Convert params to expression(node) and add to the graph
+dynet::Expression W = dynet::parameter(cg, p_W);
+</code></pre>
+
+<h2 id="parameter-initialization">Parameter Initialization</h2>
+<pre><code class="c++">dyent::Parameter p_W = model.add_parameters({HIDDEN_SIZE, 2}, dynet::GlorotInitializer());
+dyent::Parameter p_W = model.add_parameters({HIDDEN_SIZE, 2}, dynet::NormalInitializer(0,1));
+</code></pre>
+
+<h2 id="trainer-and-backdrop">Trainer and backdrop</h2>
+<ol>
+<li>Trainerをmodel(ParameterCollection)を与えて初期化してください</li>
+<li>ComputationGraph.backward()をスカラーノードから実行し勾配を求めてください．</li>
+<li>Trainer.update()を読み出すことでmodelのパラメータを勾配を用いて更新してください．</li>
+</ol>
+<h2 id="training-with-dynet">Training with DyNet</h2>
+<ol>
+<li>model(ParameterCollection)を作成し，Parametersを加え，Trainerを作成してください</li>
+<li>それぞれの訓練サンプルごとに<ol>
+<li>誤差を求めるためにComputationGraphを作成してください</li>
+<li>前方計算をしてください（誤差を計算）</li>
+<li>バックプロパゲーションを計算してください（勾配を計算）</li>
+<li>パラメータを更新</li>
+</ol>
+</li>
+</ol>
               
             </div>
           </div>
