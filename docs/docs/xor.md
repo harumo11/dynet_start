@@ -111,6 +111,11 @@ $$
 !!! note 
 	[xorの数学的解説](http://gtech.hatenablog.com/entry/2016/07/30/141647)
 
+**モデルの式**
+$$
+\hat{y} = \sigma ( \textbf{v} \cdot \tanh(\textbf{Ux} + \textbf{b}))
+$$
+
 ```c++
 #include "dynet/training.h"
 #include "dynet/expr.h"
