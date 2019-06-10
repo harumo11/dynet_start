@@ -102,9 +102,227 @@ $$
 
 ## 実際にやってみるXOR
 
+### １．隠れ層のノード数が３つのバージョン（単純）
+
+#### 1.1 計算式
+
+下記のような計算グラフを構築してXORを解いてみる．
+![image](image/xor_small.svg)
+
+また，各変数の定義は下記のとおりです．
+
+!!! note
+	計算グラフの表現と線形代数的な表現の違いに注意しましょう．
+	例えば，計算グラフではバイアス$\boldsymbol{b^1}$は１つのノードですが，
+	線形代数の表現においては要素数２のベクトルです．
+	dynetでは線形代数的な表現を用いてグラフを構築していきます．
+
+$$
+\begin{equation}
+\boldsymbol{x} = 
+\begin{bmatrix}
+x_1 \\
+x_2 \\
+\end{bmatrix}
+\end{equation}
+$$
+
+$$
+\begin{equation}
+\boldsymbol{W^{(1)}} = 
+\begin{bmatrix}
+\omega^1_{11} & \omega^1_{12}\\
+\omega^1_{21} & \omega^1_{22}\\
+\end{bmatrix}
+\end{equation}
+$$
+
+$$
+\begin{equation}
+\boldsymbol{b^{(1)}} = 
+\begin{bmatrix}
+b^1_{1} \\
+b^1_{2}\\
+\end{bmatrix}
+\end{equation}
+$$
+
+$$
+\begin{equation}
+\boldsymbol{W^{(2)}} = 
+\begin{bmatrix}
+\omega^2{11} & \omega^2_{12}\\
+\end{bmatrix}
+\end{equation}
+$$
+
+!!! note
+	重み行列は**行列**です．したがって$\boldsymbol{W^{(2)}}$は行列になります．
+	要素数が２つしかないとは言え行列ですので，横長の形になります．$\boldsymbol{W^{(2)}}$を要素数２のベクトルだと勘違いすると，
+	縦長の形を想像し，$\boldsymbol{W^{(2)}z^{(1)}}$の計算がうまく行かなくなります.
+
+$$
+\begin{equation}
+\boldsymbol{b^{(2)}} = 
+\begin{bmatrix}
+b^2_{1} \\
+\end{bmatrix}
+\end{equation}
+$$
+
+$$
+\begin{equation}
+\boldsymbol{z^{(1)}} = 
+\begin{bmatrix}
+z^1_1 \\
+z^1_2 \\
+\end{bmatrix}
+\end{equation}
+$$
+
+$$
+f^{(1)} = ReLU \\
+f^{(2)} = 1
+$$
+
+この内，
+$\boldsymbol{W^1}$,
+$\boldsymbol{W^2}$,
+$\boldsymbol{b^1}$,そして
+$\boldsymbol{b^2}$
+はdynetでいう`Parameter`であり学習によって獲得されます．
+
+計算式は下記のようになります．
+
+$$ 
+\boldsymbol{z^1} = f^{(1)} ( \boldsymbol{W^1x} + \boldsymbol{b^1} ) \\
+\hat{y} = f^{(2)} ( \boldsymbol{W^2x} + \boldsymbol{b^2} )
+$$
+
+#### 1.2 実装の前に手で解いてみる
+
+dynetに計算させる前に，自分でXOR問題をこのネットワークが解けるかどうか
+試してみましょう．まず，下記のようにそれぞれ値が与えられたとします．
+
+$$ 
+y = 1
+$$
+
+$$
+\begin{equation}
+\boldsymbol{x} = 
+\begin{bmatrix}
+0 \\
+1
+\end{bmatrix}
+\end{equation}
+$$
+
+$$
+\begin{equation}
+\boldsymbol{W^{(1)}} = 
+\begin{bmatrix}
+1 & 1 \\
+1 & 1 \\
+\end{bmatrix}
+\end{equation}
+$$
+
+$$
+\begin{equation}
+\boldsymbol{b^{(1)}} = 
+\begin{bmatrix}
+0 \\
+1 \\
+\end{bmatrix}
+\end{equation}
+$$
+
+$$
+\begin{equation}
+\boldsymbol{W^{(2)}} = 
+\begin{bmatrix}
+1 & -2
+\end{bmatrix}
+\end{equation}
+$$
+
+$$
+\begin{equation}
+\boldsymbol{b^{(2)}} = 
+\begin{bmatrix}
+0 \\
+\end{bmatrix}
+\end{equation}
+$$
+
+すると，
+
+$$
+\begin{equation}
+\boldsymbol{u^{(1)}} = \boldsymbol{W^{(1)}x}
+= 
+\begin{bmatrix}
+1 & 1 \\
+1 & 1 \\
+\end{bmatrix}
+\end{equation}
+\begin{bmatrix}
+0 \\
+1
+\end{bmatrix}
+= 
+\begin{bmatrix}
+1 \\
+1
+\end{bmatrix}
+$$
+
+$$
+\begin{equation}
+\boldsymbol{z^{(1)}} = f^{(1)}(\boldsymbol{u^{(1)}} + \boldsymbol{b^{(1)}})
+\end{equation}
+= 
+\begin{bmatrix}
+1 \\
+0
+\end{bmatrix}
+$$
+
+$$
+\begin{equation}
+\boldsymbol{u^{(2)}} = \boldsymbol{W^{(1)}x}
+= 
+\begin{bmatrix}
+1 & -2 \\
+\end{bmatrix}
+\end{equation}
+\begin{bmatrix}
+1 \\
+0
+\end{bmatrix}
+= 
+1
+$$
+
+$$
+\boldsymbol{z^{(2)}} = f^{(2)}(1) = 1
+$$
+
+よって$y = \hat{y}$となり，少なくとも$\boldsymbol{x}=(0,1)^T$においては
+学習が可能なことが示された．ちなみに，$\boldsymbol{x}$が他の場合においても
+やってみるとうまく行くことがわかる．
+
+#### 1.3 実装
+おまたせしました．dynetで実装してみましょう．
+
+
+### 2．隠れ層のノード数が8つのバージョン（公式）
+
+![image](image/xor_large.svg)
+
 !!! note
 	[xor example](https://github.com/clab/dynet/blob/master/examples/xor/train_xor.cc)
-
 
 ### プログラムの全体像
 
