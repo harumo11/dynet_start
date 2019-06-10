@@ -65,6 +65,11 @@
           
             <li class="toctree-l1">
 		
+    <a class="" href="../link/">リンク</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <a class="" href="../qiita/">Qiita</a>
 	    </li>
           
@@ -360,6 +365,384 @@ y=
 <h3 id="computation-graph">Computation Graph</h3>
 <p><img alt="image" src="../image/graph.png" /></p>
 <h2 id="xor_1">実際にやってみるXOR</h2>
+<h3 id="13">１．隠れ層のノード数が３つのバージョン（単純）</h3>
+<h4 id="11">1.1 計算式</h4>
+<p>下記のような計算グラフを構築してXORを解いてみる．
+<img alt="image" src="../image/xor_small.svg" /></p>
+<p>また，各変数の定義は下記のとおりです．</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>計算グラフの表現と線形代数的な表現の違いに注意しましょう．
+例えば，計算グラフではバイアス<span><span class="MathJax_Preview">\boldsymbol{b^1}</span><script type="math/tex">\boldsymbol{b^1}</script></span>は１つのノードですが，
+線形代数の表現においては要素数２のベクトルです．
+dynetでは線形代数的な表現を用いてグラフを構築していきます．</p>
+</div>
+<div>
+<div class="MathJax_Preview">
+\begin{equation}
+\boldsymbol{x} = 
+\begin{bmatrix}
+x_1 \\
+x_2 \\
+\end{bmatrix}
+\end{equation}
+</div>
+<script type="math/tex; mode=display">
+\begin{equation}
+\boldsymbol{x} = 
+\begin{bmatrix}
+x_1 \\
+x_2 \\
+\end{bmatrix}
+\end{equation}
+</script>
+</div>
+<div>
+<div class="MathJax_Preview">
+\begin{equation}
+\boldsymbol{W^{(1)}} = 
+\begin{bmatrix}
+\omega^1_{11} &amp; \omega^1_{12}\\
+\omega^1_{21} &amp; \omega^1_{22}\\
+\end{bmatrix}
+\end{equation}
+</div>
+<script type="math/tex; mode=display">
+\begin{equation}
+\boldsymbol{W^{(1)}} = 
+\begin{bmatrix}
+\omega^1_{11} & \omega^1_{12}\\
+\omega^1_{21} & \omega^1_{22}\\
+\end{bmatrix}
+\end{equation}
+</script>
+</div>
+<div>
+<div class="MathJax_Preview">
+\begin{equation}
+\boldsymbol{b^{(1)}} = 
+\begin{bmatrix}
+b^1_{1} \\
+b^1_{2}\\
+\end{bmatrix}
+\end{equation}
+</div>
+<script type="math/tex; mode=display">
+\begin{equation}
+\boldsymbol{b^{(1)}} = 
+\begin{bmatrix}
+b^1_{1} \\
+b^1_{2}\\
+\end{bmatrix}
+\end{equation}
+</script>
+</div>
+<div>
+<div class="MathJax_Preview">
+\begin{equation}
+\boldsymbol{W^{(2)}} = 
+\begin{bmatrix}
+\omega^2{11} &amp; \omega^2_{12}\\
+\end{bmatrix}
+\end{equation}
+</div>
+<script type="math/tex; mode=display">
+\begin{equation}
+\boldsymbol{W^{(2)}} = 
+\begin{bmatrix}
+\omega^2{11} & \omega^2_{12}\\
+\end{bmatrix}
+\end{equation}
+</script>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>重み行列は<strong>行列</strong>です．したがって<span><span class="MathJax_Preview">\boldsymbol{W^{(2)}}</span><script type="math/tex">\boldsymbol{W^{(2)}}</script></span>は行列になります．
+要素数が２つしかないとは言え行列ですので，横長の形になります．<span><span class="MathJax_Preview">\boldsymbol{W^{(2)}}</span><script type="math/tex">\boldsymbol{W^{(2)}}</script></span>を要素数２のベクトルだと勘違いすると，
+縦長の形を想像し，<span><span class="MathJax_Preview">\boldsymbol{W^{(2)}z^{(1)}}</span><script type="math/tex">\boldsymbol{W^{(2)}z^{(1)}}</script></span>の計算がうまく行かなくなります.</p>
+</div>
+<div>
+<div class="MathJax_Preview">
+\begin{equation}
+\boldsymbol{b^{(2)}} = 
+\begin{bmatrix}
+b^2_{1} \\
+\end{bmatrix}
+\end{equation}
+</div>
+<script type="math/tex; mode=display">
+\begin{equation}
+\boldsymbol{b^{(2)}} = 
+\begin{bmatrix}
+b^2_{1} \\
+\end{bmatrix}
+\end{equation}
+</script>
+</div>
+<div>
+<div class="MathJax_Preview">
+\begin{equation}
+\boldsymbol{z^{(1)}} = 
+\begin{bmatrix}
+z^1_1 \\
+z^1_2 \\
+\end{bmatrix}
+\end{equation}
+</div>
+<script type="math/tex; mode=display">
+\begin{equation}
+\boldsymbol{z^{(1)}} = 
+\begin{bmatrix}
+z^1_1 \\
+z^1_2 \\
+\end{bmatrix}
+\end{equation}
+</script>
+</div>
+<div>
+<div class="MathJax_Preview">
+f^{(1)} = ReLU \\
+f^{(2)} = 1
+</div>
+<script type="math/tex; mode=display">
+f^{(1)} = ReLU \\
+f^{(2)} = 1
+</script>
+</div>
+<p>この内，
+<span><span class="MathJax_Preview">\boldsymbol{W^1}</span><script type="math/tex">\boldsymbol{W^1}</script></span>,
+<span><span class="MathJax_Preview">\boldsymbol{W^2}</span><script type="math/tex">\boldsymbol{W^2}</script></span>,
+<span><span class="MathJax_Preview">\boldsymbol{b^1}</span><script type="math/tex">\boldsymbol{b^1}</script></span>,そして
+<span><span class="MathJax_Preview">\boldsymbol{b^2}</span><script type="math/tex">\boldsymbol{b^2}</script></span>
+はdynetでいう<code>Parameter</code>であり学習によって獲得されます．</p>
+<p>計算式は下記のようになります．</p>
+<div>
+<div class="MathJax_Preview"> 
+\boldsymbol{z^1} = f^{(1)} ( \boldsymbol{W^1x} + \boldsymbol{b^1} ) \\
+\hat{y} = f^{(2)} ( \boldsymbol{W^2x} + \boldsymbol{b^2} )
+</div>
+<script type="math/tex; mode=display"> 
+\boldsymbol{z^1} = f^{(1)} ( \boldsymbol{W^1x} + \boldsymbol{b^1} ) \\
+\hat{y} = f^{(2)} ( \boldsymbol{W^2x} + \boldsymbol{b^2} )
+</script>
+</div>
+<h4 id="12">1.2 実装の前に手で解いてみる</h4>
+<p>dynetに計算させる前に，自分でXOR問題をこのネットワークが解けるかどうか
+試してみましょう．まず，下記のようにそれぞれ値が与えられたとします．</p>
+<div>
+<div class="MathJax_Preview"> 
+y = 1
+</div>
+<script type="math/tex; mode=display"> 
+y = 1
+</script>
+</div>
+<div>
+<div class="MathJax_Preview">
+\begin{equation}
+\boldsymbol{x} = 
+\begin{bmatrix}
+0 \\
+1
+\end{bmatrix}
+\end{equation}
+</div>
+<script type="math/tex; mode=display">
+\begin{equation}
+\boldsymbol{x} = 
+\begin{bmatrix}
+0 \\
+1
+\end{bmatrix}
+\end{equation}
+</script>
+</div>
+<div>
+<div class="MathJax_Preview">
+\begin{equation}
+\boldsymbol{W^{(1)}} = 
+\begin{bmatrix}
+1 &amp; 1 \\
+1 &amp; 1 \\
+\end{bmatrix}
+\end{equation}
+</div>
+<script type="math/tex; mode=display">
+\begin{equation}
+\boldsymbol{W^{(1)}} = 
+\begin{bmatrix}
+1 & 1 \\
+1 & 1 \\
+\end{bmatrix}
+\end{equation}
+</script>
+</div>
+<div>
+<div class="MathJax_Preview">
+\begin{equation}
+\boldsymbol{b^{(1)}} = 
+\begin{bmatrix}
+0 \\
+1 \\
+\end{bmatrix}
+\end{equation}
+</div>
+<script type="math/tex; mode=display">
+\begin{equation}
+\boldsymbol{b^{(1)}} = 
+\begin{bmatrix}
+0 \\
+1 \\
+\end{bmatrix}
+\end{equation}
+</script>
+</div>
+<div>
+<div class="MathJax_Preview">
+\begin{equation}
+\boldsymbol{W^{(2)}} = 
+\begin{bmatrix}
+1 &amp; -2
+\end{bmatrix}
+\end{equation}
+</div>
+<script type="math/tex; mode=display">
+\begin{equation}
+\boldsymbol{W^{(2)}} = 
+\begin{bmatrix}
+1 & -2
+\end{bmatrix}
+\end{equation}
+</script>
+</div>
+<div>
+<div class="MathJax_Preview">
+\begin{equation}
+\boldsymbol{b^{(2)}} = 
+\begin{bmatrix}
+0 \\
+\end{bmatrix}
+\end{equation}
+</div>
+<script type="math/tex; mode=display">
+\begin{equation}
+\boldsymbol{b^{(2)}} = 
+\begin{bmatrix}
+0 \\
+\end{bmatrix}
+\end{equation}
+</script>
+</div>
+<p>すると，</p>
+<div>
+<div class="MathJax_Preview">
+\begin{equation}
+\boldsymbol{u^{(1)}} = \boldsymbol{W^{(1)}x}
+= 
+\begin{bmatrix}
+1 &amp; 1 \\
+1 &amp; 1 \\
+\end{bmatrix}
+\end{equation}
+\begin{bmatrix}
+0 \\
+1
+\end{bmatrix}
+= 
+\begin{bmatrix}
+1 \\
+1
+\end{bmatrix}
+</div>
+<script type="math/tex; mode=display">
+\begin{equation}
+\boldsymbol{u^{(1)}} = \boldsymbol{W^{(1)}x}
+= 
+\begin{bmatrix}
+1 & 1 \\
+1 & 1 \\
+\end{bmatrix}
+\end{equation}
+\begin{bmatrix}
+0 \\
+1
+\end{bmatrix}
+= 
+\begin{bmatrix}
+1 \\
+1
+\end{bmatrix}
+</script>
+</div>
+<div>
+<div class="MathJax_Preview">
+\begin{equation}
+\boldsymbol{z^{(1)}} = f^{(1)}(\boldsymbol{u^{(1)}} + \boldsymbol{b^{(1)}})
+\end{equation}
+= 
+\begin{bmatrix}
+1 \\
+0
+\end{bmatrix}
+</div>
+<script type="math/tex; mode=display">
+\begin{equation}
+\boldsymbol{z^{(1)}} = f^{(1)}(\boldsymbol{u^{(1)}} + \boldsymbol{b^{(1)}})
+\end{equation}
+= 
+\begin{bmatrix}
+1 \\
+0
+\end{bmatrix}
+</script>
+</div>
+<div>
+<div class="MathJax_Preview">
+\begin{equation}
+\boldsymbol{u^{(2)}} = \boldsymbol{W^{(1)}x}
+= 
+\begin{bmatrix}
+1 &amp; -2 \\
+\end{bmatrix}
+\end{equation}
+\begin{bmatrix}
+1 \\
+0
+\end{bmatrix}
+= 
+1
+</div>
+<script type="math/tex; mode=display">
+\begin{equation}
+\boldsymbol{u^{(2)}} = \boldsymbol{W^{(1)}x}
+= 
+\begin{bmatrix}
+1 & -2 \\
+\end{bmatrix}
+\end{equation}
+\begin{bmatrix}
+1 \\
+0
+\end{bmatrix}
+= 
+1
+</script>
+</div>
+<div>
+<div class="MathJax_Preview">
+\boldsymbol{z^{(2)}} = f^{(2)}(1) = 1
+</div>
+<script type="math/tex; mode=display">
+\boldsymbol{z^{(2)}} = f^{(2)}(1) = 1
+</script>
+</div>
+<p>よって<span><span class="MathJax_Preview">y = \hat{y}</span><script type="math/tex">y = \hat{y}</script></span>となり，少なくとも<span><span class="MathJax_Preview">\boldsymbol{x}=(0,1)^T</span><script type="math/tex">\boldsymbol{x}=(0,1)^T</script></span>においては
+学習が可能なことが示された．ちなみに，<span><span class="MathJax_Preview">\boldsymbol{x}</span><script type="math/tex">\boldsymbol{x}</script></span>が他の場合においても
+やってみるとうまく行くことがわかる．</p>
+<h4 id="13_1">1.3 実装</h4>
+<p>おまたせしました．dynetで実装してみましょう．</p>
+<h3 id="28">2．隠れ層のノード数が8つのバージョン（公式）</h3>
+<p><img alt="image" src="../image/xor_large.svg" /></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><a href="https://github.com/clab/dynet/blob/master/examples/xor/train_xor.cc">xor example</a></p>

@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Unorthodox Design - dynet start documentation in Japanese</title>
+  <title>リンク - dynet start documentation in Japanese</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Unorthodox Design";
-    var mkdocs_page_input_path = "unorthodox_design.md";
+    var mkdocs_page_name = "\u30ea\u30f3\u30af";
+    var mkdocs_page_input_path = "link.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -63,9 +63,23 @@
     <a class="" href="../common/">一般的な使い方</a>
 	    </li>
           
-            <li class="toctree-l1">
+            <li class="toctree-l1 current">
 		
-    <a class="" href="../link/">リンク</a>
+    <a class="current" href="./">リンク</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#_1">リンク</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#_2">参考にしたサイト</a></li>
+        
+            <li><a class="toctree-l3" href="#_3">便利ツール</a></li>
+        
+        </ul>
+    
+
+    </ul>
 	    </li>
           
             <li class="toctree-l1">
@@ -88,21 +102,9 @@
     <a class="" href="../trouble_shorting/">トラブルシューティング</a>
 	    </li>
           
-            <li class="toctree-l1 current">
+            <li class="toctree-l1">
 		
-    <a class="current" href="./">Unorthodox Design</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l2"><a href="#unorthodox-design">Unorthodox Design</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l3" href="#sparse-update">Sparse Update</a></li>
-        
-        </ul>
-    
-
-    </ul>
+    <a class="" href="../unorthodox_design/">Unorthodox Design</a>
 	    </li>
           
             <li class="toctree-l1">
@@ -132,7 +134,7 @@
     
       
     
-    <li>Unorthodox Design</li>
+    <li>リンク</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -142,32 +144,24 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="unorthodox-design">Unorthodox Design</h1>
+                <h1 id="_1">リンク</h1>
+<h2 id="_2">参考にしたサイト</h2>
 <div class="admonition note">
-<p class="admonition-title">unorthodox</p>
-<p>非正統派という意味．よってunotrhodox designは非正統的なデザインと訳される</p>
+<p class="admonition-title">Galapagos Glog</p>
+<p>手計算でXORを得方法を紹介しているサイト．計算グラフの表現とプログラミングするときの
+線形代数的な表現の違いがわかる．</p>
 </div>
-<p>いくつかの箇所で他のライブラリの実装とは異なるをdynetは選択しました．
-もしくは，あなたが想定している実装方法とは幾分異なる箇所があるかもしれません．
-下記に非正統的なデザインを選択した箇所のリストを示します．
-これを読むことにより，プログラムを書いているときに驚くのを避けることがきます.</p>
-<h2 id="sparse-update">Sparse Update</h2>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Sparse Update = 疎な更新</p>
+<p class="admonition-title">Easy Copy MathJax</p>
+<p>MkDocsで数式を描画するときにMathJaxを使用しているので，vectorの太文字のやり方
+とかここを見ると便利．MathJaxは微妙にLatexの記法と異なるの注意．</p>
 </div>
-<p>デフォルトでは，dynetのパラメータオプティマイザは<code>LookupParameters</code>を通して
-疎な更新を実行します．
-つまり，この意味は<code>LookupParameters</code>オブジェクトがあり，特定のインデックスの
-サブセットを使用してからパラメータの更新を実行すると，オプティマイザは
-使用済みサブセットをループし，未使用の値を更新することはありません．
-これはいくつかの場合において効率を改善することができます．
-あなたが10万語の語彙のための埋め込みを持っていて，あなたご特定の更新で
-それらのうち５つだけを使うならば，これにより全ての10万語以上の更新を
-避けることができるでしょう．ただし，注意することが２つあります．
-１つめは，<code>MomentumSDGTrainer</code>と<code>AdamTrainer</code>のようなモーメンタムを使用している
-更新則は厳密に正しいものではなくなります．(いくつかの努力により正しくすることもできます
-が，それはプログラミングを複雑にします．我々はそれを選択しませんでした．)</p>
+<h2 id="_3">便利ツール</h2>
+<div class="admonition note">
+<p class="admonition-title">NN_-SVG</p>
+<p>簡単にかっこいいニューラルネットワークの図を作成可能なサイト．
+FCNN(一般的なネットワーク)のほかに，LeNet styleやAlexNet styleにも対応している．</p>
+</div>
               
             </div>
           </div>
@@ -175,10 +169,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../xor/" class="btn btn-neutral float-right" title="XOR">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../qiita/" class="btn btn-neutral float-right" title="Qiita">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../trouble_shorting/" class="btn btn-neutral" title="トラブルシューティング"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../common/" class="btn btn-neutral" title="一般的な使い方"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -204,10 +198,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../trouble_shorting/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../common/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../xor/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../qiita/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
