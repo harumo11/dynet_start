@@ -76,10 +76,10 @@ irisはアヤメの分類を行うデータセットです．
 各変数（パラメータ）のサイズは下記のとおりです．
 
 - $\boldsymbol{x} : 4 \times 1$
-- $\boldsymbol{W^{(1)}} : 8 \times 4$
-- $\boldsymbol{b^{(1)}} : 8 \times 1$
-- $\boldsymbol{z^{(1)}} : 8 \times 1$
-- $\boldsymbol{W^{(2)}} : 3 \times 8$
+- $\boldsymbol{W^{(1)}} : 16 \times 4$
+- $\boldsymbol{b^{(1)}} : 16 \times 1$
+- $\boldsymbol{z^{(1)}} : 16 \times 1$
+- $\boldsymbol{W^{(2)}} : 3 \times 16$
 - $\boldsymbol{b^{(2)}} : 3 \times 1$
 - $\boldsymbol{\hat{y}} : 3 \times 1$
 
