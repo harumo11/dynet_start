@@ -81,5 +81,23 @@ int main(int argc, char* argv[])
 	plot.show();
 	std::cin.get();
 
+	// 結果を確かめる
+	x_value[0] = -1;
+	x_value[1] = -1;
+	cg.forward(loss_expr);
+	std::cout << "[-1,-1] -1 : " << dynet::as_scalar(y_pred.value()) << std::endl;
+	x_value[0] = -1;
+	x_value[1] = 1;
+	cg.forward(loss_expr);
+	std::cout << "[-1,1] 1 : " << dynet::as_scalar(y_pred.value()) << std::endl;
+	x_value[0] = 1;
+	x_value[1] = -1;
+	cg.forward(loss_expr);
+	std::cout << "[1,-1] 1 : " << dynet::as_scalar(y_pred.value()) << std::endl;
+	x_value[0] = 1;
+	x_value[1] = 1;
+	cg.forward(loss_expr);
+	std::cout << "[1,1] -1 : " << dynet::as_scalar(y_pred.value()) << std::endl;
+
 	return 0;
 }
