@@ -16,16 +16,21 @@
 	簡単にかっこいいニューラルネットワークの図を作成可能なサイト．
 	FCNN(一般的なネットワーク)のほかに，LeNet styleやAlexNet styleにも対応している．
 
+## 勉強サイト
+
+!!! note "[couresera](https://www.coursera.org/learn/machine-learning)"
+	corueseraの機械学習の資料を提供しているサイト
+
 ## データセット
 
 ### 基本
 
-!!! note "[Iris](http://archive.ics.uci.edu/ml/datasets/Iris)
+!!! note "[Iris](http://archive.ics.uci.edu/ml/datasets/Iris)"
 	言わずとしれたirisのデータセット
 
 ### まとめ
 
-!!! note "[UCI Machine Learning Repository](http://archive.ics.uci.edu/ml/index.php)
+!!! note "[UCI Machine Learning Repository](http://archive.ics.uci.edu/ml/index.php)"
 	世界一有名な？UCLAの機械学習のデータセットレポジトリ．irisデータセットとかも
 	ここに含まれる．
 
