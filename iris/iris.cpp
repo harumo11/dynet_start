@@ -38,10 +38,24 @@ int main(int argc, char* argv[])
 	dynet::Expression b2 = dynet::parameter(cg, p_b2);
 	// ニューラルネット及び，計算グラフへの入力変数x_valueを宣言し，変更可能なように参照渡しする．
 	std::vector<dynet::real> x_value(4);
-	dynet::Expression y = dynet::one_hot(cg, 4, 0);
-	for (auto&& e : dynet::as_vector(y.value())){
+	dynet::Expression x = dynet::input(cg, {4}, x_value);
+	// ニューラルネット及び，計算グラフへの入力変数y_setosa(1,0,0)を宣言し，変更可能なように参照渡しする．
+	dynet::Expression y_setosa = dynet::one_hot(cg, 4, 0);
+	for (auto&& e : dynet::as_vector(y_setosa.value())){
 		std::cout << e << std::endl;
 	}
+	std::cout << "-----------------------------------" << std::endl;
+	// ニューラルネット及び，計算グラフへの入力変数y_versicolor(0,1,0)を宣言し，変更可能なように参照渡しする．
+	dynet::Expression y_versicolor = dynet::one_hot(cg, 4, 1);
+	for (auto&& e : dynet::as_vector(y_versicolor.value())){
+		std::cout << e << std::endl;
+	}
+	std::cout << "-----------------------------------" << std::endl;
+	// ニューラルネット及び，計算グラフへの入力変数y_virginica(0,0,1)を宣言し，変更可能なように参照渡しする．
+	dynet::Expression y_virginica = dynet::one_hot(cg, 4, 2);
+	for (auto&& e : dynet::as_vector(y_virginica.value())){
+		std::cout << e << std::endl;
+	}
+	// 計算グラフにノードの接続関係を宣言する
 	return 0;
-
 }

@@ -568,6 +568,20 @@ Expression dynet::lookup(ComputatinGraph& g, LookupParameter p, const std::vecto
 これらの操作は確率を計算するために使用されます．
 もしくはトレーニング中に損失関数を計算するために使用されます．
 
+Expression dynet::pickneglogsoftmax(const Expression &x, unsigned v)
+: Negative softmax log likelihood
+  この関数はスコアxのベクトルを取り込みます．そして，log softmaxを実行し
+  -1を掛けます．そして，要素vに対応した確立を選びます．返り値は損失関数の`Expression`です．
+  この関数はもしかすると集合から１つの要素を予測するニューラルネットのトレーニングにおいて
+  最も有名な誤差関数かもしれせん．
+	
+	Return
+	: softmaxを実行した後の要素`v`のnegative logの確立
+
+	Parameters
+	: - `x` : スコアのvector
+	  - `v` : 損失を計算するための要素
+
 ### Flow/Shaping Operations
 これらの操作は`ComputationGraph`を流れる情報の流れを制御します．
 もしくは，graph内で使用されているvector/tensorhの形を制御します．
