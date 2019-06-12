@@ -57,5 +57,7 @@ int main(int argc, char* argv[])
 		std::cout << e << std::endl;
 	}
 	// 計算グラフにノードの接続関係を宣言する
+	dynet::Expression z1 = dynet::rectify(W1*x+b1);
+	dynet::Expression y_pred = 
 	return 0;
 }
