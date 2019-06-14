@@ -1,0 +1,26 @@
+digraph G {
+  rankdir=LR;
+  nodesep=.05;
+  N0 [label="v0 = parameters({16,4}) @ 0x55a1bc477d50"];
+  N1 [label="v1 = parameters({16}) @ 0x55a1bce13040"];
+  N2 [label="v2 = parameters({3,16}) @ 0x55a1bce12f20"];
+  N3 [label="v3 = parameters({3}) @ 0x55a1bb62c660"];
+  N4 [label="v4 = constant({4})"];
+  N5 [label="v5 = v0 * v4"];
+  N0 -> N5;
+  N4 -> N5;
+  N6 [label="v6 = v5 + v1"];
+  N5 -> N6;
+  N1 -> N6;
+  N7 [label="v7 = ReLU(v6)"];
+  N6 -> N7;
+  N8 [label="v8 = v2 * v7"];
+  N2 -> N8;
+  N7 -> N8;
+  N9 [label="v9 = v8 + v3"];
+  N8 -> N9;
+  N3 -> N9;
+  N10 [label="v10 = softmax(v9)"];
+  N9 -> N10;
+}
+

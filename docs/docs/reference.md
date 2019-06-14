@@ -568,6 +568,32 @@ Expression dynet::lookup(ComputatinGraph& g, LookupParameter p, const std::vecto
 これらの操作は確率を計算するために使用されます．
 もしくはトレーニング中に損失関数を計算するために使用されます．
 
+#### Probability Operation
+
+Expression dynet::softmax(const Expression &x, unsigned d = 0)
+: ソフトマックス関数
+  このソフトマックス関数は各列を正規化して，全ての値が０から１の間を取るように
+  します．これには$\frac{e^{x_i}}{\sum_j e^{x_j}}$という式を利用します．
+
+	Return
+	: softmaxを計算した後のvectorかmatrix
+
+	Parameters
+	: - `x` : vectorかmatrix
+      - `d` : 正規化する次元(デフォルト = 0)
+
+Expression dynet::rectify(const Expression &x)
+: 正規化線形関数(rectified linear function) **ReLU**
+  要素ごとに正規化関数(ReLU)$y_i = \max(x_i, 0)$を実行します．
+
+	Return
+	: i番目の要素が$\max(x_i, 0)$である`Expression`
+
+	Parameters
+	: - `x` : 入力されるExpression
+
+#### Loss Operation
+
 Expression dynet::pickneglogsoftmax(const Expression &x, unsigned v)
 : Negative softmax log likelihood
   この関数はスコアxのベクトルを取り込みます．そして，log softmaxを実行し
