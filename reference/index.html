@@ -897,6 +897,63 @@ vectorを参照渡しで渡す入力と似ています．しかし，この関�
 <h3 id="probabilityloss-operations">Probability/Loss Operations</h3>
 <p>これらの操作は確率を計算するために使用されます．
 もしくはトレーニング中に損失関数を計算するために使用されます．</p>
+<h4 id="probability-operation">Probability Operation</h4>
+<dl>
+<dt>Expression dynet::softmax(const Expression &amp;x, unsigned d = 0)</dt>
+<dd>
+<p>ソフトマックス関数
+  このソフトマックス関数は各列を正規化して，全ての値が０から１の間を取るように
+  します．これには<span><span class="MathJax_Preview">\frac{e^{x_i}}{\sum_j e^{x_j}}</span><script type="math/tex">\frac{e^{x_i}}{\sum_j e^{x_j}}</script></span>という式を利用します．</p>
+<dl>
+<dt>Return</dt>
+<dd>softmaxを計算した後のvectorかmatrix</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li><code>x</code> : vectorかmatrix</li>
+<li><code>d</code> : 正規化する次元(デフォルト = 0)</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Expression dynet::rectify(const Expression &amp;x)</dt>
+<dd>
+<p>正規化線形関数(rectified linear function) <strong>ReLU</strong>
+  要素ごとに正規化関数(ReLU)<span><span class="MathJax_Preview">y_i = \max(x_i, 0)</span><script type="math/tex">y_i = \max(x_i, 0)</script></span>を実行します．</p>
+<dl>
+<dt>Return</dt>
+<dd>i番目の要素が<span><span class="MathJax_Preview">\max(x_i, 0)</span><script type="math/tex">\max(x_i, 0)</script></span>である<code>Expression</code></dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li><code>x</code> : 入力されるExpression</li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+<h4 id="loss-operation">Loss Operation</h4>
+<dl>
+<dt>Expression dynet::pickneglogsoftmax(const Expression &amp;x, unsigned v)</dt>
+<dd>
+<p>Negative softmax log likelihood
+  この関数はスコアxのベクトルを取り込みます．そして，log softmaxを実行し
+  -1を掛けます．そして，要素vに対応した確立を選びます．返り値は損失関数の<code>Expression</code>です．
+  この関数はもしかすると集合から１つの要素を予測するニューラルネットのトレーニングにおいて
+  最も有名な誤差関数かもしれせん．</p>
+<dl>
+<dt>Return</dt>
+<dd>softmaxを実行した後の要素<code>v</code>のnegative logの確立</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li><code>x</code> : スコアのvector</li>
+<li><code>v</code> : 損失を計算するための要素</li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
 <h3 id="flowshaping-operations">Flow/Shaping Operations</h3>
 <p>これらの操作は<code>ComputationGraph</code>を流れる情報の流れを制御します．
 もしくは，graph内で使用されているvector/tensorhの形を制御します．</p>
