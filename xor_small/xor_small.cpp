@@ -79,24 +79,28 @@ int main(int argc, char* argv[])
 	Series plot("error");
 	plot.plot(loss_vec);
 	plot.show();
-	std::cin.get();
+	plot.save_as_png("error");
 
 	// 結果を確かめる
 	x_value[0] = -1;
 	x_value[1] = -1;
-	cg.forward(loss_expr);
+	//cg.forward(loss_expr);
+	cg.forward(y_pred);
 	std::cout << "[-1,-1] -1 : " << dynet::as_scalar(y_pred.value()) << std::endl;
 	x_value[0] = -1;
 	x_value[1] = 1;
-	cg.forward(loss_expr);
+	//cg.forward(loss_expr);
+	cg.forward(y_pred);
 	std::cout << "[-1,1] 1 : " << dynet::as_scalar(y_pred.value()) << std::endl;
 	x_value[0] = 1;
 	x_value[1] = -1;
-	cg.forward(loss_expr);
+	//cg.forward(loss_expr);
+	cg.forward(y_pred);
 	std::cout << "[1,-1] 1 : " << dynet::as_scalar(y_pred.value()) << std::endl;
 	x_value[0] = 1;
 	x_value[1] = 1;
-	cg.forward(loss_expr);
+	//cg.forward(loss_expr);
+	cg.forward(y_pred);
 	std::cout << "[1,1] -1 : " << dynet::as_scalar(y_pred.value()) << std::endl;
 
 	return 0;
