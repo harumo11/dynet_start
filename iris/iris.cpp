@@ -1,11 +1,29 @@
 #include <iostream>
 #include <vector>
 #include <tuple>
+#include <sstream>
 #include <fstream>
-#include <dynet/dynet.h>	// 基本的なクラス
-#include <dynet/training.h> // トレーナ
-#include <dynet/expr.h>		// Expression,parameterのため
+#include <dynet/dynet.h>	// Basic classes
+#include <dynet/training.h> // Trainer
+#include <dynet/expr.h>		// Expression, Parameter
 
+
+// This function splits gevein sentence including comma to each single word.
+std::tuple<double, double, double, double, std::string> split(const std::string sentence, const char comma){
+
+	std::stringstream sentence_stream;
+	sentence_stream << sentence;
+	std::string word;
+	std::vector<std::string> results;
+
+	while (std::getline(sentence_stream, word, comma)) {
+		results.push_back(word);
+	}
+
+	return std::forward_as_tuple(std::stod(results[0]), std::stod(results[1]), std::stod(results[2]), std::stod(results[3]), results[4]);
+}
+
+// This function loads file and return vector data of iris.
 std::tuple<std::vector<double>,  
 	       std::vector<double>, 
 		   std::vector<double>, 
@@ -22,14 +40,13 @@ std::tuple<std::vector<double>,
 	std::vector<double> petal_length_vec;
 	std::vector<double> petal_width_vec;
 	std::vector<std::string> iris_class_vec;
-	double sepal_length;
-	double sepal_width;
-	double petal_length;
-	double petal_width;
-	std::string iris_class;
 	int itr = 0;
-	char delim = ',';
-	while(iris_file >> sepal_length >> delim >> sepal_width >> delim >> petal_length >> delim >> petal_width >> delim >> iris_class){
+	std::string one_line_sentence;
+
+	while(iris_file >> one_line_sentence){
+		// split here
+		auto [sepal_length, sepal_width, petal_length, petal_width, iris_class] = split(one_line_sentence, ',');
+
 		sepal_length_vec.push_back(sepal_length);
 		sepal_width_vec.push_back(sepal_width);
 		petal_length_vec.push_back(petal_length);
@@ -73,22 +90,22 @@ std::tuple<std::vector<double>,
 
 int main(int argc, char* argv[])
 {
-	// iris データの読み込み
+	// Loading of iris data
 	auto[sepal_length_vec, sepal_width_vec, petal_length_vec, petal_width_vec, iris_class_num_vec] = load_iris_data();
 	
-	// dynetの初期化
+	// Initialize of dynet
 	dynet::initialize(argc, argv);
 
-	// 設定
+	// Configuration
 	const int HIDDEN_LAYER_SIZE = 16;
 	const int INPUT_LAYER_SIZE = 4;
 	const int OUTPUT_LAYER_SIZE = 3;
 
-	// 計算グラフを構築
+	// Building computational graph
 	dynet::ParameterCollection model;
 	dynet::SimpleSGDTrainer trainer(model);
 
-	// パラメータを設定（パラメータ＝最適化される変数）
+	// Set parameters
 	// W1 (8x4) matrix
 	dynet::Parameter p_W1 = model.add_parameters({HIDDEN_LAYER_SIZE, INPUT_LAYER_SIZE});
 	// b1 (16x1) vector
@@ -98,36 +115,35 @@ int main(int argc, char* argv[])
 	// b2 (3x1) vector
 	dynet::Parameter p_b2 = model.add_parameters({OUTPUT_LAYER_SIZE});
 
-	// ノードの作成と計算グラフへの登録
+	// Making nodes and registering to computational graph
 	dynet::ComputationGraph cg;
 	dynet::Expression W1 = dynet::parameter(cg, p_W1);
 	dynet::Expression b1 = dynet::parameter(cg, p_b1);
 	dynet::Expression W2 = dynet::parameter(cg, p_W2);
 	dynet::Expression b2 = dynet::parameter(cg, p_b2);
-	// ニューラルネット及び，計算グラフへの入力変数x_valueを宣言し，変更可能なように参照渡しする．
+	// Making input variable x_value
 	std::vector<dynet::real> x_value(4);
 	dynet::Expression x = dynet::input(cg, {4}, x_value);
-	// ニューラルネット及び，計算グラフへの入力変数y_labelを宣言し，変更可能なようにポインタ渡しをする．
-	// *y_label = 0 : setosa
-	// *y_label = 1 : versicolor
-	// *y_label = 2 : virginica
-	unsigned int* y_label = 0;
-	// 計算グラフにノードの接続関係を宣言する
-	dynet::Expression z1 = dynet::rectify(W1*x+b1);		// 入力層
-	dynet::Expression y_pred = dynet::softmax(W2*z1+b2);// 第１層
+	// Defintions of relationship of nodes
+	dynet::Expression z1 = dynet::rectify(W1*x+b1);		// Input layer
+	dynet::Expression y_pred = dynet::softmax(W2*z1+b2);// Hidden layer
 
-	dynet::Expression loss_expr = dynet::pickneglogsoftmax(y_pred, y_label); // 出力層
+	// Making output value y_label_*
+	int y_label_setosa     = 0; //: setosa
+	int y_label_versicolor = 1; //: versicolor
+	int y_label_virginica  = 2; //: virginica
+	dynet::Expression loss_expr_setosa     = dynet::pickneglogsoftmax(y_pred, y_label_setosa); // 出力層 (setosa)
+	dynet::Expression loss_expr_versicolor = dynet::pickneglogsoftmax(y_pred, y_label_versicolor); // 出力層 (versicolor)
+	dynet::Expression loss_expr_virginica  = dynet::pickneglogsoftmax(y_pred, y_label_virginica); // 出力層 (virginica)
 
-	// 構築した計算グラフを描いてみる．それが僕には楽しかったから
+	// Drawing our computational graph, just for fun.
 	cg.print_graphviz();
 
-	// 学習させてみる.
+	// Training
 	double loss_value = 0;
 	for (int itr = 0; itr < iris_class_num_vec.size(); itr++) {
-		// 正解ラベルの設定
-		*y_label = iris_class_num_vec[itr];
 
-		// 入力を設定
+		// Setting concrete x_value
 		x_value[0] = sepal_length_vec[itr];
 		x_value[1] = sepal_width_vec[itr];
 		x_value[2] = petal_length_vec[itr];
@@ -135,19 +151,37 @@ int main(int argc, char* argv[])
 		
 		// setosa	  : 0   - 49
 		if (0 <= itr && itr < 50) {
-			loss_value = dynet::as_scalar(cg.forward(loss_expr));
+			loss_value = dynet::as_scalar(cg.forward(loss_expr_setosa));
+			cg.backward(loss_expr_setosa);
 		}
 		// versicolor : 50  - 99
 		if (50 <= itr && itr < 100) {
-			loss_value = dynet::as_scalar(cg.forward(loss_expr));
+			loss_value = dynet::as_scalar(cg.forward(loss_expr_versicolor));
+			cg.backward(loss_expr_versicolor);
 		}
 		// virginica  : 100 - 149
 		if (100 <= itr && itr < 150) {
-			loss_value = dynet::as_scalar(cg.forward(loss_expr));
+			loss_value = dynet::as_scalar(cg.forward(loss_expr_virginica));
+			cg.backward(loss_expr_virginica);
 		}
-		cg.backward(loss_expr);
 		trainer.update();
-		std::cout << "E = " << loss_value << std::endl;
+		std::cout << "[ " <<  itr++ << " ] " << " E = " << loss_value << std::endl;
 	}
+
+	// Prediction
+	// Setting concrete x_value 
+	// NOTE Ordinary, we should not use trainging data. This time, we use it for easy.
+	x_value[0] = sepal_length_vec[20];
+	x_value[1] = sepal_width_vec[20];
+	x_value[2] = petal_length_vec[20];
+	x_value[3] = petal_width_vec[20];
+
+	// Showing probability of each iris class.
+	cg.forward(loss_expr_virginica);
+	auto result = dynet::as_vector(y_pred.value());
+	for (auto&& e : result) {
+		std::cout << e << std::endl;
+	}
+	
 	return 0;
 }
