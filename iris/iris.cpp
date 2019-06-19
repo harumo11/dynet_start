@@ -6,6 +6,7 @@
 #include <dynet/dynet.h>	// Basic classes
 #include <dynet/training.h> // Trainer
 #include <dynet/expr.h>		// Expression, Parameter
+#include <gpop/Series.hpp>
 
 
 // This function splits gevein sentence including comma to each single word.
@@ -21,6 +22,61 @@ std::tuple<double, double, double, double, std::string> split(const std::string 
 	}
 
 	return std::forward_as_tuple(std::stod(results[0]), std::stod(results[1]), std::stod(results[2]), std::stod(results[3]), results[4]);
+}
+
+class IrisData {
+	public:
+		IrisData(std::string iris_data_path);
+		double sepal_length;
+		double sepal_width;
+		double petal_length;
+		double petal_width;
+		std::string class_name;
+		unsigned int class_number;
+		std::tuple<double, double, double, double, std::string, unsigned int> split(const std::string sentence, const char comma);
+};
+
+std::tuple<double, double, double, double, std::string, unsigned int> IrisData::split(const std::string sentence, const char comma){
+	std::stringstream sentence_stream;
+	sentence_stream << sentence;
+	std::string word;
+	unsigned int class_number;
+	std::vector<std::string> results;
+
+	while (std::getline(sentence_stream, word, comma)) {
+		results.push_back(word);
+	}
+
+	// Convert from iris class name(Iris-setosa, Iris-versicolor, Iris-virginica) to iris class number [0,2]
+	if (results[4] == "Iris-setosa") {
+		class_number = 0;
+	}
+	else if (results[4] == "Iris-versicolor") {
+		class_number = 1;
+	}
+	else {
+		class_number = 2;
+	}
+
+	return std::forward_as_tuple(std::stod(results[0]), std::stod(results[1]), std::stod(results[2]), std::stod(results[3]), results[4], class_number);
+}
+
+IrisData::IrisData(std::string iris_data_path) {
+
+	// Open the iris data
+	std::ifstream iris_file(iris_data_path);
+	if (!iris_file) {
+		std::cout << "[ERROR] : Couldn't open iris.data file" << std::endl;
+	}
+
+	// Load data
+	std::string one_line_sentence;
+
+	while(iris_file >> one_line_sentence){
+		// split here
+		auto [sepal_length, sepal_width, petal_length, petal_width, iris_class, iris_number] = split(one_line_sentence, ',');
+	}
+	
 }
 
 // This function loads file and return vector data of iris.
@@ -97,7 +153,7 @@ int main(int argc, char* argv[])
 	dynet::initialize(argc, argv);
 
 	// Configuration
-	const int HIDDEN_LAYER_SIZE = 16;
+	const int HIDDEN_LAYER_SIZE = 8;
 	const int INPUT_LAYER_SIZE = 4;
 	const int OUTPUT_LAYER_SIZE = 3;
 
@@ -132,15 +188,16 @@ int main(int argc, char* argv[])
 	int y_label_setosa     = 0; //: setosa
 	int y_label_versicolor = 1; //: versicolor
 	int y_label_virginica  = 2; //: virginica
-	dynet::Expression loss_expr_setosa     = dynet::pickneglogsoftmax(y_pred, y_label_setosa); // 出力層 (setosa)
-	dynet::Expression loss_expr_versicolor = dynet::pickneglogsoftmax(y_pred, y_label_versicolor); // 出力層 (versicolor)
-	dynet::Expression loss_expr_virginica  = dynet::pickneglogsoftmax(y_pred, y_label_virginica); // 出力層 (virginica)
+	dynet::Expression loss_expr_setosa     = dynet::pickneglogsoftmax(y_pred, y_label_setosa);		// Output layer (setosa)
+	dynet::Expression loss_expr_versicolor = dynet::pickneglogsoftmax(y_pred, y_label_versicolor);	// Output layer (versicolor)
+	dynet::Expression loss_expr_virginica  = dynet::pickneglogsoftmax(y_pred, y_label_virginica);	// Output layer (virginica)
 
 	// Drawing our computational graph, just for fun.
 	cg.print_graphviz();
 
 	// Training
 	double loss_value = 0;
+	std::vector<double> loss_vector;
 	for (int itr = 0; itr < iris_class_num_vec.size(); itr++) {
 
 		// Setting concrete x_value
@@ -165,8 +222,15 @@ int main(int argc, char* argv[])
 			cg.backward(loss_expr_virginica);
 		}
 		trainer.update();
-		std::cout << "[ " <<  itr++ << " ] " << " E = " << loss_value << std::endl;
+		loss_vector.push_back(loss_value);
+		std::cout << "[ " <<  itr << " ] " << " E = " << loss_value << std::endl;
 	}
+
+	// Show loss plot
+	Series plot;
+	plot.plot(loss_vector);
+	plot.show();
+	std::cin.get();
 
 	// Prediction
 	// Setting concrete x_value 
@@ -177,7 +241,7 @@ int main(int argc, char* argv[])
 	x_value[3] = petal_width_vec[20];
 
 	// Showing probability of each iris class.
-	cg.forward(loss_expr_virginica);
+	cg.forward(y_pred);
 	auto result = dynet::as_vector(y_pred.value());
 	for (auto&& e : result) {
 		std::cout << e << std::endl;

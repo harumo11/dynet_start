@@ -4,4 +4,4 @@ add_definitions("-std=c++17")
 
 add_executable(iris iris.cpp)
 
-target_link_libraries(iris dynet pthread)
+target_link_libraries(iris dynet pthread gpop)
