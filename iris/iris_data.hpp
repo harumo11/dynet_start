@@ -16,6 +16,7 @@ class IrisData {
 		double petal_width;
 		std::string class_name;
 		unsigned int class_number;
+		int index;
 };
 
 class IrisDataTable {
@@ -43,6 +44,7 @@ IrisDataTable::IrisDataTable(const std::string iris_data_path){
 	while (iris_file >> one_line_sentence) {
 		// split here
 		this->data_table[itr] = this->split(one_line_sentence);
+		this->data_table[itr].index = itr;
 		itr++;
 	}
 }
@@ -87,8 +89,9 @@ IrisData IrisDataTable::at(const int index){
 }
 
 void IrisDataTable::shuffle(){
-	std::random_device rnd;
-	std::mt19937 engine(rnd());
+
+	std::random_device seed_gen;
+	std::mt19937 engine(seed_gen());
 	std::shuffle(this->data_table.begin(), this->data_table.end(), engine);
 }
 
@@ -97,6 +100,6 @@ void IrisDataTable::print(){
 	int itr = 0;
 	for (auto&& data : this->data_table){
 		std::cout << "---------------\t" <<  itr++ << "\t----------------" << std::endl;
-		std::cout << "sepal_length : " << data.sepal_length << "\t sepal_width : " << data.sepal_width << "\t petal_length : " << data.petal_length << "\t petal_width : " << data.petal_width << "\t class name : " << data.class_name << std::endl;
+		std::cout << "[ " << data.index << " ] " <<"sepal_length : " << data.sepal_length << "\t sepal_width : " << data.sepal_width << "\t petal_length : " << data.petal_length << "\t petal_width : " << data.petal_width << "\t class name : " << data.class_name << std::endl;
 	}
 }

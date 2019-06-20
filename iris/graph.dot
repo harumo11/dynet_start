@@ -1,10 +1,10 @@
 digraph G {
   rankdir=LR;
   nodesep=.05;
-  N0 [label="v0 = parameters({16,4}) @ 0x23bfaa0"];
-  N1 [label="v1 = parameters({16}) @ 0x23bfbe0"];
-  N2 [label="v2 = parameters({3,16}) @ 0x23bccc0"];
-  N3 [label="v3 = parameters({3}) @ 0x23bcdc0"];
+  N0 [label="v0 = parameters({8,4}) @ 0x31e54ea0"];
+  N1 [label="v1 = parameters({8}) @ 0x32d11120"];
+  N2 [label="v2 = parameters({3,8}) @ 0x32d11000"];
+  N3 [label="v3 = parameters({3}) @ 0x31bb48e0"];
   N4 [label="v4 = constant({4})"];
   N5 [label="v5 = v0 * v4"];
   N0 -> N5;
