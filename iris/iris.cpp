@@ -60,9 +60,11 @@ int main(int argc, char* argv[])
 	int y_label_setosa     = 0; //: setosa
 	int y_label_versicolor = 1; //: versicolor
 	int y_label_virginica  = 2; //: virginica
-	dynet::Expression loss_expr_setosa     = dynet::pickneglogsoftmax(y_pred, y_label_setosa);		// Output layer (setosa)
-	dynet::Expression loss_expr_versicolor = dynet::pickneglogsoftmax(y_pred, y_label_versicolor);	// Output layer (versicolor)
-	dynet::Expression loss_expr_virginica  = dynet::pickneglogsoftmax(y_pred, y_label_virginica);	// Output layer (virginica)
+	unsigned* y_label = 0;
+	//dynet::Expression loss_expr_setosa     = dynet::pickneglogsoftmax(y_pred, y_label_setosa);		// Output layer (setosa)
+	//dynet::Expression loss_expr_versicolor = dynet::pickneglogsoftmax(y_pred, y_label_versicolor);	// Output layer (versicolor)
+	//dynet::Expression loss_expr_virginica  = dynet::pickneglogsoftmax(y_pred, y_label_virginica);	// Output layer (virginica)
+	dynet::Expression loss_expr = dynet::pickneglogsoftmax(y_pred, y_label);
 
 	// Drawing our computational graph, just for fun.
 	cg.print_graphviz();
@@ -82,18 +84,21 @@ int main(int argc, char* argv[])
 
 		// setosa	  : 0   - 49
 		if (iris_data_table.data_table[itr].class_name == "Iris-setosa"){
-			loss_value = dynet::as_scalar(cg.forward(loss_expr_setosa));
-			cg.backward(loss_expr_setosa);
+			*y_label = 0;
+			loss_value = dynet::as_scalar(cg.forward(loss_expr));
+			cg.backward(loss_expr);
 		}
 		// versicolor : 50  - 99
 		if (iris_data_table.data_table[itr].class_name == "Iris-versicolor") {
-			loss_value = dynet::as_scalar(cg.forward(loss_expr_versicolor));
-			cg.backward(loss_expr_versicolor);
+			*y_label = 1;
+			loss_value = dynet::as_scalar(cg.forward(loss_expr));
+			cg.backward(loss_expr);
 		}
 		// virginica  : 100 - 149
 		if (iris_data_table.data_table[itr].class_name == "Iris-virginica") {
-			loss_value = dynet::as_scalar(cg.forward(loss_expr_virginica));
-			cg.backward(loss_expr_virginica);
+			*y_label = 2;
+			loss_value = dynet::as_scalar(cg.forward(loss_expr));
+			cg.backward(loss_expr);
 		}
 		trainer.update();
 		loss_vector.push_back(loss_value);
