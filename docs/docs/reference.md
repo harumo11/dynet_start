@@ -602,11 +602,39 @@ Expression dynet::pickneglogsoftmax(const Expression &x, unsigned v)
   最も有名な誤差関数かもしれせん．
 	
 	Return
-	: softmaxを実行した後の要素`v`のnegative logの確立
+	: softmaxを実行した後の要素`v`のnegative logの確率
 
 	Parameters
 	: - `x` : スコアのvector
 	  - `v` : 損失を計算するための要素
+
+Expression dynet::pickneglogsoftmax(const Expression &x, const unsigned* pv)
+: Modifiable negative softmax log likelihood
+  この関数はsoftmaxの後に，`*pv`に関してnegative log likelihoodを計算します．
+  この関数は`v`を値渡しで渡された以前の関数と同じ計算をします．
+  しかし，ポインタ私をしたことによって`*pv`は計算グラフを再構築する必要なく
+  変更することが可能です．これは計算グラフを一回だけ構築したい場合に役に
+  立ちます．そして，異なるデータ点を入力することができます．
+
+	Return
+  	: softmaxを実行した後の`*pv`の要素のnegative log likelihood
+
+	Parameters
+	: - `x` : 値のベクター
+	  - `pv` : 多々しい要素を指し示すインデックスのポインタ
+
+Expression dynet::pickneglogsoftmax(const Expression &x, std::vector<unsigned> &v)
+: Negative softmax log likelihood
+  この関数は基本的なpickneglogsoftmaxに似ています．しかし，複数のバッチ要素に関して
+  損失を計算するために使用します．この入力はベクターのミニバッチになります．
+  このベクターにおいて，バッチ要素の数はベクターの要素数に等しい必要があります．
+
+	Return
+	: softmaxを実行した後の要素`v`のnegative logの確率
+
+	Parameters
+	: - 'x' : N個のバッチ要素にわたるスコアのベクトルによるExpression
+	: - 'v' : 要素数がNのベクター．全てのバッチ要素に関して正解のインデックスを指し示すベクター
 
 ### Flow/Shaping Operations
 これらの操作は`ComputationGraph`を流れる情報の流れを制御します．
