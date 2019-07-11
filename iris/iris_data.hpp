@@ -26,10 +26,16 @@ class IrisDataTable {
 		int get_data_size();
 		IrisData at(const int index);
 		IrisData split(const std::string sentence);
-		std::vector<IrisData> data_table;
+		std::vector<IrisData> data_table = std::vector<IrisData>(150);
 		void print();
 };
 
+/**
+ * @brief A constructor, 
+ * In this constructor, getting all data, parsing those data is done.
+ *
+ * @param iris_data_path A path to iris.data
+ */
 IrisDataTable::IrisDataTable(const std::string iris_data_path){
 	// Open iris data
 	std::ifstream iris_file(iris_data_path);
@@ -40,13 +46,15 @@ IrisDataTable::IrisDataTable(const std::string iris_data_path){
 	// Split each data from one data
 	std::string one_line_sentence;
 	int itr = 0;
-	this->data_table.resize(150);
+	//this->data_table.resize(150);
 	while (iris_file >> one_line_sentence) {
 		// split here
 		this->data_table[itr] = this->split(one_line_sentence);
 		this->data_table[itr].index = itr;
 		itr++;
 	}
+	
+	std::cout << "[ Iris data parsing ] " << "data size : " << itr << std::endl;
 }
 
 IrisData IrisDataTable::split(const std::string sentence){
@@ -62,6 +70,7 @@ IrisData IrisDataTable::split(const std::string sentence){
 	}
 
 	// Convert from std::string to double for each data
+	std::cout << "parsing result size : " << results.size() << std::endl;
 	return_data.sepal_length = std::stod(results[0]);
 	return_data.sepal_width  = std::stod(results[1]);
 	return_data.petal_length = std::stod(results[2]);
@@ -81,6 +90,7 @@ IrisData IrisDataTable::split(const std::string sentence){
 		return_data.class_number = 2;
 	}
 
+	std::cout << "[ Show one data ] : " << "[class number] : " << return_data.class_number << "[class name] : " << return_data.class_name << "\t" << return_data.petal_width << "\t" << return_data.petal_length << "\t" << return_data.sepal_width << "\t" << return_data.sepal_length << std::endl;
 	return return_data;
 }
 
@@ -97,9 +107,20 @@ void IrisDataTable::shuffle(){
 
 void IrisDataTable::print(){
 
-	int itr = 0;
-	for (auto&& data : this->data_table){
-		std::cout << "---------------\t" <<  itr++ << "\t----------------" << std::endl;
-		std::cout << "[ " << data.index << " ] " <<"sepal_length : " << data.sepal_length << "\t sepal_width : " << data.sepal_width << "\t petal_length : " << data.petal_length << "\t petal_width : " << data.petal_width << "\t class name : " << data.class_name << std::endl;
+	this->data_table.shrink_to_fit();
+	std::cout << "[ Table information ] " << this->data_table.size() << std::endl;
+
+	// TODO
+	// Write print function here
+	for (int itr = 0; itr < this->data_table.size(); itr++) {
+		std::cout << "[ " << this->data_table.at(itr).index << " ] " << 
+			         "[class]\t" << this->data_table.at(itr).class_name << 
+					 "\t: " << this->data_table.at(itr).class_number << 
+					 "\t[petal] " << 
+					 this->data_table.at(itr).petal_length << 
+					 this->data_table.at(itr).petal_width << 
+					 "\t[sepal] " <<
+					 this->data_table.at(itr).sepal_length << 
+					 this->data_table.at(itr).sepal_width << std::endl;
 	}
 }

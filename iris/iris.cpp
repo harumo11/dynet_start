@@ -18,11 +18,15 @@ int main(int argc, char* argv[])
 	// Loading of iris data
 	IrisDataTable iris_data_table("iris.data");
 	iris_data_table.print();
+	std::cout << "[ D ] iris data are printed 1" << std::endl;
 	iris_data_table.shuffle();
 	iris_data_table.print();
+	std::cout << "[ D ] iris data are printed 2" << std::endl;
+	std::cout << "[ D ] iris data are prepared" << std::endl;
 	
 	// Initialize of dynet
 	dynet::initialize(argc, argv);
+	std::cout << "dynet intialized" << std::endl;
 
 	// Configuration
 	const int HIDDEN_LAYER_SIZE = 16;
@@ -42,6 +46,7 @@ int main(int argc, char* argv[])
 	dynet::Parameter p_W2 = model.add_parameters({OUTPUT_LAYER_SIZE, HIDDEN_LAYER_SIZE});
 	// b2 (3x1) vector
 	dynet::Parameter p_b2 = model.add_parameters({OUTPUT_LAYER_SIZE});
+	std::cout << "[ D ] Parameters are prepared" << std::endl;
 
 	// Making nodes and registering to computational graph
 	dynet::ComputationGraph cg;
@@ -54,7 +59,9 @@ int main(int argc, char* argv[])
 	dynet::Expression x = dynet::input(cg, {4}, x_value);
 	// Defintions of relationship of nodes
 	dynet::Expression z1 = dynet::rectify(W1*x+b1);		// Input layer
-	dynet::Expression y_pred = dynet::softmax(W2*z1+b2);// Hidden layer
+	//dynet::Expression y_pred = dynet::softmax(W2*z1+b2);// Hidden layer
+	dynet::Expression y_pred = W2*z1+b2;// Hidden layer
+	std::cout << "[ D ] Expression are prepared" << std::endl;
 
 	// Making output value y_label_*
 	int y_label_setosa     = 0; //: setosa
@@ -65,9 +72,11 @@ int main(int argc, char* argv[])
 	//dynet::Expression loss_expr_versicolor = dynet::pickneglogsoftmax(y_pred, y_label_versicolor);	// Output layer (versicolor)
 	//dynet::Expression loss_expr_virginica  = dynet::pickneglogsoftmax(y_pred, y_label_virginica);	// Output layer (virginica)
 	dynet::Expression loss_expr = dynet::pickneglogsoftmax(y_pred, y_label);
+	std::cout << "[ D ] pickneglogsoftmax are prepared" << std::endl;
 
 	// Drawing our computational graph, just for fun.
 	cg.print_graphviz();
+	std::cout << "[ D ] Draw graphviz" << std::endl;
 
 	// Training
 	double loss_value = 0;
