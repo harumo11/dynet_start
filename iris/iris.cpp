@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
 	std::cout << "dynet intialized" << std::endl;
 
 	// Configuration
-	const int HIDDEN_LAYER_SIZE = 16;
+	const int HIDDEN_LAYER_SIZE = 8;
 	const int INPUT_LAYER_SIZE = 4;
 	const int OUTPUT_LAYER_SIZE = 3;
 
@@ -67,7 +67,9 @@ int main(int argc, char* argv[])
 	int y_label_setosa     = 0; //: setosa
 	int y_label_versicolor = 1; //: versicolor
 	int y_label_virginica  = 2; //: virginica
-	unsigned* y_label = 0;
+	unsigned* y_label;
+	unsigned y_init = 1;
+	y_label = &y_init;
 	//dynet::Expression loss_expr_setosa     = dynet::pickneglogsoftmax(y_pred, y_label_setosa);		// Output layer (setosa)
 	//dynet::Expression loss_expr_versicolor = dynet::pickneglogsoftmax(y_pred, y_label_versicolor);	// Output layer (versicolor)
 	//dynet::Expression loss_expr_virginica  = dynet::pickneglogsoftmax(y_pred, y_label_virginica);	// Output layer (virginica)
@@ -89,23 +91,24 @@ int main(int argc, char* argv[])
 		x_value[2] = iris_data_table.data_table[itr].petal_length;
 		x_value[4] = iris_data_table.data_table[itr].petal_width;
 
-
-
 		// setosa	  : 0   - 49
 		if (iris_data_table.data_table[itr].class_name == "Iris-setosa"){
 			*y_label = 0;
+			std::cout << "[label] : " << *y_label << std::endl;
 			loss_value = dynet::as_scalar(cg.forward(loss_expr));
 			cg.backward(loss_expr);
 		}
 		// versicolor : 50  - 99
 		if (iris_data_table.data_table[itr].class_name == "Iris-versicolor") {
 			*y_label = 1;
+			std::cout << "[label] : " << *y_label << std::endl;
 			loss_value = dynet::as_scalar(cg.forward(loss_expr));
 			cg.backward(loss_expr);
 		}
 		// virginica  : 100 - 149
 		if (iris_data_table.data_table[itr].class_name == "Iris-virginica") {
 			*y_label = 2;
+			std::cout << "[label] : " << *y_label << std::endl;
 			loss_value = dynet::as_scalar(cg.forward(loss_expr));
 			cg.backward(loss_expr);
 		}
