@@ -60,6 +60,11 @@
           
             <li class="toctree-l1">
 		
+    <a class="" href="../basic_tutorial/">基本的なチュートリアル</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <a class="" href="../common/">一般的な使い方</a>
 	    </li>
           
@@ -71,6 +76,11 @@
             <li class="toctree-l1">
 		
     <a class="" href="../link/">リンク</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../minibatching/">ミニバッチ</a>
 	    </li>
           
             <li class="toctree-l1">
@@ -943,12 +953,54 @@ vectorを参照渡しで渡す入力と似ています．しかし，この関�
   最も有名な誤差関数かもしれせん．</p>
 <dl>
 <dt>Return</dt>
-<dd>softmaxを実行した後の要素<code>v</code>のnegative logの確立</dd>
+<dd>softmaxを実行した後の要素<code>v</code>のnegative logの確率</dd>
 <dt>Parameters</dt>
 <dd>
 <ul>
 <li><code>x</code> : スコアのvector</li>
 <li><code>v</code> : 損失を計算するための要素</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Expression dynet::pickneglogsoftmax(const Expression &amp;x, const unsigned* pv)</dt>
+<dd>
+<p>Modifiable negative softmax log likelihood
+  この関数はsoftmaxの後に，<code>*pv</code>に関してnegative log likelihoodを計算します．
+  この関数は<code>v</code>を値渡しで渡された以前の関数と同じ計算をします．
+  しかし，ポインタ私をしたことによって<code>*pv</code>は計算グラフを再構築する必要なく
+  変更することが可能です．これは計算グラフを一回だけ構築したい場合に役に
+  立ちます．そして，異なるデータ点を入力することができます．</p>
+<dl>
+<dt>Return</dt>
+<dd>softmaxを実行した後の<code>*pv</code>の要素のnegative log likelihood</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li><code>x</code> : 値のベクター</li>
+<li><code>pv</code> : 多々しい要素を指し示すインデックスのポインタ</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Expression dynet::pickneglogsoftmax(const Expression &amp;x, std::vector<unsigned> &amp;v)</dt>
+<dd>
+<p>Negative softmax log likelihood
+  この関数は基本的なpickneglogsoftmaxに似ています．しかし，複数のバッチ要素に関して
+  損失を計算するために使用します．この入力はベクターのミニバッチになります．
+  このベクターにおいて，バッチ要素の数はベクターの要素数に等しい必要があります．</p>
+<dl>
+<dt>Return</dt>
+<dd>softmaxを実行した後の要素<code>v</code>のnegative logの確率</dd>
+<dt>Parameters</dt>
+<dd>
+<ul>
+<li>'x' : N個のバッチ要素にわたるスコアのベクトルによるExpression</li>
+</ul>
+</dd>
+<dd>
+<ul>
+<li>'v' : 要素数がNのベクター．全てのバッチ要素に関して正解のインデックスを指し示すベクター</li>
 </ul>
 </dd>
 </dl>

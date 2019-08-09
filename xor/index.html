@@ -60,6 +60,11 @@
           
             <li class="toctree-l1">
 		
+    <a class="" href="../basic_tutorial/">基本的なチュートリアル</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <a class="" href="../common/">一般的な使い方</a>
 	    </li>
           
@@ -71,6 +76,11 @@
             <li class="toctree-l1">
 		
     <a class="" href="../link/">リンク</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../minibatching/">ミニバッチ</a>
 	    </li>
           
             <li class="toctree-l1">
@@ -873,10 +883,9 @@ int main(int argc, char* argv[])
 <p><a href="http://gtech.hatenablog.com/entry/2016/07/30/141647">xorの数学的解説</a></p>
 </div>
 <p><strong>モデルの式</strong>
-<script type="math/tex; mode=display">
+$$
 \hat{y} = \sigma ( \textbf{v} \cdot \tanh(\textbf{Ux} + \textbf{b}))
-</script>
-</p>
+$$</p>
 <pre><code class="c++">#include &quot;dynet/training.h&quot;
 #include &quot;dynet/expr.h&quot;
 #include &quot;dynet/io.h&quot;
