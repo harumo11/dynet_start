@@ -3,7 +3,7 @@
 #include <dynet/training.h>
 #include <dynet/expr.h>
 #include <dynet/model.h>
-#include <gpop/Series.hpp>
+#include <Gpop/Series.hpp>
 
 int main(int argc, char* argv[])
 {
@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
 	}
 
 	// 誤差をプロットする
-	Series plot("error");
+	Gpop::Series plot("error");
 	plot.plot(loss_vec);
 	plot.show();
 	plot.save_as_png("error");

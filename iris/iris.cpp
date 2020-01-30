@@ -6,7 +6,7 @@
 #include <dynet/dynet.h>	// Basic classes
 #include <dynet/training.h> // Trainer
 #include <dynet/expr.h>		// Expression, Parameter
-#include <gpop/Series.hpp>
+#include <Gpop/Series.hpp>
 
 #include "iris_data.hpp"
 
@@ -18,10 +18,8 @@ int main(int argc, char* argv[])
 	// Loading of iris data
 	IrisDataTable iris_data_table("iris.data");
 	iris_data_table.print();
-	std::cout << "[ D ] iris data are printed 1" << std::endl;
 	iris_data_table.shuffle();
 	iris_data_table.print();
-	std::cout << "[ D ] iris data are printed 2" << std::endl;
 	std::cout << "[ D ] iris data are prepared" << std::endl;
 	
 	// Initialize of dynet
@@ -32,6 +30,7 @@ int main(int argc, char* argv[])
 	const int HIDDEN_LAYER_SIZE = 8;
 	const int INPUT_LAYER_SIZE = 4;
 	const int OUTPUT_LAYER_SIZE = 3;
+	const int MINIBATCH_SIZE = 4;
 
 	// Building computational graph
 	dynet::ParameterCollection model;
@@ -50,13 +49,17 @@ int main(int argc, char* argv[])
 
 	// Making nodes and registering to computational graph
 	dynet::ComputationGraph cg;
+
+	// Making input variable x_value
+	std::vector<dynet::real> x_value(INPUT_LAYER_SIZE * );
+	std::vector<unsigned int> y_value;
+	dynet::Dim x_dim({INPUT_LAYER_SIZE}, MINIBATCH_SIZE);
+	dynet::Expression x = dynet::input(cg, x_dim, &x_value);
+
 	dynet::Expression W1 = dynet::parameter(cg, p_W1);
 	dynet::Expression b1 = dynet::parameter(cg, p_b1);
 	dynet::Expression W2 = dynet::parameter(cg, p_W2);
 	dynet::Expression b2 = dynet::parameter(cg, p_b2);
-	// Making input variable x_value
-	std::vector<dynet::real> x_value(4);
-	dynet::Expression x = dynet::input(cg, {4}, x_value);
 	// Defintions of relationship of nodes
 	dynet::Expression z1 = dynet::rectify(W1*x+b1);		// Input layer
 	//dynet::Expression y_pred = dynet::softmax(W2*z1+b2);// Hidden layer

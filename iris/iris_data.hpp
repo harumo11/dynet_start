@@ -8,6 +8,9 @@
 #include <random>
 #include <algorithm>
 
+/**
+ * @brief Repesents one flower data.
+ */
 class IrisData {
 	public:
 		double sepal_length;
@@ -19,15 +22,21 @@ class IrisData {
 		int index;
 };
 
+/**
+ * @brief Represents all flower data in table.
+ */
 class IrisDataTable {
 	public:
 		IrisDataTable(const std::string iris_data_path);
 		void shuffle();
 		int get_data_size();
 		IrisData at(const int index);
+		void print();
+		std::pair<std::vector<float>, std::vector<float>> generate_data(const unsigned int training_data_size = 140);
+
+	private:
 		IrisData split(const std::string sentence);
 		std::vector<IrisData> data_table = std::vector<IrisData>(150);
-		void print();
 };
 
 /**
@@ -53,10 +62,51 @@ IrisDataTable::IrisDataTable(const std::string iris_data_path){
 		this->data_table[itr].index = itr;
 		itr++;
 	}
-	
-	std::cout << "[ Iris data parsing ] " << "data size : " << itr << std::endl;
 }
 
+std::pair<std::vector<float>, std::vector<float>> IrisDataTable::generate_data(const unsigned int training_data_size){
+
+	auto copied_table = this->data_table;
+	std::vector<float> training_data_vector;
+	std::vector<float> verificating_data_vector;
+
+	//shuffle table
+	this->shuffle();
+
+	std::cout << "generate_data1" << std::endl;
+	std::cout << copied_table.size() << std::endl;
+	//generate iterator which represents training data.
+	for (int i = 0; i < copied_table.size(); i++) {
+		std::cout << i << std::endl;
+		auto iris_data = copied_table.at(i);
+		copied_table.erase(copied_table.begin()+i);
+		training_data_vector.push_back(iris_data.sepal_width);
+		training_data_vector.push_back(iris_data.sepal_length);
+		training_data_vector.push_back(iris_data.petal_width);
+		training_data_vector.push_back(iris_data.petal_length);
+	}
+
+	copied_table.shrink_to_fit();
+
+	std::cout << "generate_data2" << std::endl;
+	for (auto d : copied_table){
+		verificating_data_vector.push_back(d.sepal_width);
+		verificating_data_vector.push_back(d.sepal_length);
+		verificating_data_vector.push_back(d.petal_width);
+		verificating_data_vector.push_back(d.petal_length);
+	}
+	std::cout << "generate_data3" << std::endl;
+
+	return std::make_pair(training_data_vector, verificating_data_vector);
+}
+
+/**
+ * @brief Read one line from iris.data, parse it.
+ *
+ * @param sentence one line from iris.data
+ *
+ * @return splited data.
+ */
 IrisData IrisDataTable::split(const std::string sentence){
 	std::stringstream sentence_stream;
 	sentence_stream << sentence;
@@ -110,8 +160,6 @@ void IrisDataTable::print(){
 	this->data_table.shrink_to_fit();
 	std::cout << "[ Table information ] " << this->data_table.size() << std::endl;
 
-	// TODO
-	// Write print function here
 	for (int itr = 0; itr < this->data_table.size(); itr++) {
 		std::cout << "[ " << this->data_table.at(itr).index << " ] " << 
 			         "[class]\t" << this->data_table.at(itr).class_name << 
