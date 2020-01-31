@@ -51,9 +51,13 @@ int main(int argc, char* argv[])
 	dynet::ComputationGraph cg;
 
 	// Making input variable x_value
-	std::vector<dynet::real> x_value(INPUT_LAYER_SIZE * );
+	// DEBUG
+	//std::vector<dynet::real> x_value(INPUT_LAYER_SIZE * MINIBATCH_SIZE);
+	std::vector<dynet::real> x_value(INPUT_LAYER_SIZE);
 	std::vector<unsigned int> y_value;
-	dynet::Dim x_dim({INPUT_LAYER_SIZE}, MINIBATCH_SIZE);
+	//dynet::Dim x_dim({INPUT_LAYER_SIZE}, MINIBATCH_SIZE);
+	dynet::Dim x_dim({INPUT_LAYER_SIZE});
+	//dynet::Expression x = dynet::input(cg, x_dim, &x_value);
 	dynet::Expression x = dynet::input(cg, x_dim, &x_value);
 
 	dynet::Expression W1 = dynet::parameter(cg, p_W1);
@@ -86,42 +90,41 @@ int main(int argc, char* argv[])
 	// Training
 	double loss_value = 0;
 	std::vector<double> loss_vector;
-	for (int itr = 0; itr < iris_data_table.data_table.size(); itr++) {
+	for (int itr = 0; itr < iris_data_table.get_data_size(); itr++) {
 
 		// Setting concrete x_value
-		x_value[0] = iris_data_table.data_table[itr].sepal_length;
-		x_value[1] = iris_data_table.data_table[itr].sepal_width;
-		x_value[2] = iris_data_table.data_table[itr].petal_length;
-		x_value[4] = iris_data_table.data_table[itr].petal_width;
+		x_value[0] = iris_data_table.at(itr).sepal_length;
+		x_value[1] = iris_data_table.at(itr).sepal_width;
+		x_value[2] = iris_data_table.at(itr).petal_length;
+		x_value[4] = iris_data_table.at(itr).petal_width;
 
 		// setosa	  : 0   - 49
-		if (iris_data_table.data_table[itr].class_name == "Iris-setosa"){
+		if (iris_data_table.at(itr).class_name == "Iris-setosa"){
 			*y_label = 0;
 			std::cout << "[label] : " << *y_label << std::endl;
 			loss_value = dynet::as_scalar(cg.forward(loss_expr));
-			cg.backward(loss_expr);
 		}
 		// versicolor : 50  - 99
-		if (iris_data_table.data_table[itr].class_name == "Iris-versicolor") {
+		if (iris_data_table.at(itr).class_name == "Iris-versicolor") {
 			*y_label = 1;
 			std::cout << "[label] : " << *y_label << std::endl;
 			loss_value = dynet::as_scalar(cg.forward(loss_expr));
-			cg.backward(loss_expr);
 		}
 		// virginica  : 100 - 149
-		if (iris_data_table.data_table[itr].class_name == "Iris-virginica") {
+		if (iris_data_table.at(itr).class_name == "Iris-virginica") {
 			*y_label = 2;
 			std::cout << "[label] : " << *y_label << std::endl;
 			loss_value = dynet::as_scalar(cg.forward(loss_expr));
-			cg.backward(loss_expr);
 		}
+		cg.forward(loss_expr);
+		cg.backward(loss_expr);
 		trainer.update();
 		loss_vector.push_back(loss_value);
 		std::cout << "[ " <<  itr << " ] " << " E = " << loss_value << std::endl;
 	}
 
 	// Show loss plot
-	Series plot;
+	Gpop::Series plot;
 	plot.plot(loss_vector);
 	plot.show();
 	std::cin.get();
@@ -129,11 +132,11 @@ int main(int argc, char* argv[])
 	// Prediction
 	// Setting concrete x_value 
 	// NOTE Ordinary, we should not use trainging data. This time, we use it for easy.
-	x_value[0] = iris_data_table.data_table[20].sepal_length;
-	x_value[1] = iris_data_table.data_table[20].sepal_width;
-	x_value[2] = iris_data_table.data_table[20].petal_length;
-	x_value[3] = iris_data_table.data_table[20].petal_width;
-	int y_label_answer = iris_data_table.data_table[20].class_number;
+	x_value[0] = iris_data_table.at(20).sepal_length;
+	x_value[1] = iris_data_table.at(20).sepal_width;
+	x_value[2] = iris_data_table.at(20).petal_length;
+	x_value[3] = iris_data_table.at(20).petal_width;
+	int y_label_answer = iris_data_table.at(20).class_number;
 
 	// Showing probability of each iris class.
 	cg.forward(y_pred);

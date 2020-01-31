@@ -172,3 +172,7 @@ void IrisDataTable::print(){
 					 this->data_table.at(itr).sepal_width << std::endl;
 	}
 }
+
+int IrisDataTable::get_data_size(){
+	return this->data_table.size();
+}

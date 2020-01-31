@@ -7,7 +7,6 @@
 
 int main(int argc, char* argv[])
 {
-
 	// dynetの初期化
 	dynet::initialize(argc, argv);
 
@@ -42,7 +41,8 @@ int main(int argc, char* argv[])
 	dynet::real y_value;
 	dynet::Expression y = dynet::input(cg, &y_value);
 	// 計算グラフにノードの接続関係を宣言する．
-	dynet::Expression z1 = dynet::rectify(W1*x+b1);
+	//dynet::Expression z1 = dynet::rectify(W1*x+b1);
+	dynet::Expression z1 = dynet::tanh(W1*x+b1);
 	dynet::Expression y_pred = W2*z1+b2;
 	dynet::Expression loss_expr = dynet::squared_distance(y_pred, y);
 
@@ -80,6 +80,7 @@ int main(int argc, char* argv[])
 	plot.plot(loss_vec);
 	plot.show();
 	plot.save_as_png("error");
+	std::cin.get();
 
 	// 結果を確かめる
 	x_value[0] = -1;
